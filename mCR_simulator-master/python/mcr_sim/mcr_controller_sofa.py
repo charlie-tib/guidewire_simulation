@@ -38,6 +38,7 @@ class ControllerSofa(Sofa.Core.Controller):
         self.e_mns = e_mns
         self.instrument = instrument
         self.T_sim_mns = T_sim_mns
+        self.listening = True
         self.mag_field_init = mag_field_init
 
         self.dfield_angle = 0.
@@ -54,6 +55,16 @@ class ControllerSofa(Sofa.Core.Controller):
         self.mag_controller.field_des = self.mag_field_init
 
         self.print_insertion_length = False
+        self._step_count = 0
+
+    def onAnimateBeginEvent(self, event):
+        self._step_count += 1
+        if self._step_count % 100 == 0:
+            print(f"ControllerSofa Heartbeat: Simulation is running (Step {self._step_count})")
+
+    def onEvent(self, event):
+        if event['type'] == 'KeypressedEvent':
+            print(f"ControllerSofa detected Key: {event['key']}")
 
     def onKeypressedEvent(self, event):
         ''' Send magnetic field and insertion inputs when keys are pressed.'''

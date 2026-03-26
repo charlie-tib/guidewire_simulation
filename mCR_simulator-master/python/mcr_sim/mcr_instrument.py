@@ -195,7 +195,7 @@ class Instrument(Sofa.Core.Controller):
             'InterventionalRadiologyController',
             xtip=[0.001], name='m_ircontroller',
             instruments='InterpolGuide',
-            step=0.0007,
+            step=0.01,
             printLog=True,
             listening=True,
             template='Rigid3d',

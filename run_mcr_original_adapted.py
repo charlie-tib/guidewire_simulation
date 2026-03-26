@@ -78,6 +78,20 @@ T_start_sim = [
     trans_start_env[1]+transl_env_sim[1],
     trans_start_env[2]+transl_env_sim[2],
     quat_start[0], quat_start[1], quat_start[2], quat_start[3]]
+print(f"T_start_sim: {T_start_sim}")
+
+class KeyboardMonitor(Sofa.Core.Controller):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
+        self.listening = True
+        self.enabled = True
+    def onEvent(self, event):
+        # 打印所有键盘和鼠标事件进行终极调试
+        et = event['type']
+        if "Key" in et or "Mouse" in et:
+            print(f"[RAW EVENT] {et} | Key: {event.get('key', 'N/A')}")
+    def onKeypressedEvent(self, event):
+        print(f"[KEYBOARD MONITOR] Key Pressed: '{event['key']}'")
 
 
 def createScene(root_node):
@@ -142,5 +156,7 @@ def createScene(root_node):
     )
     controller_sofa.print_insertion_length = False
     root_node.addObject(controller_sofa)
+    
+    root_node.addObject(KeyboardMonitor(name="KeyboardMonitor"))
     
     return root_node
