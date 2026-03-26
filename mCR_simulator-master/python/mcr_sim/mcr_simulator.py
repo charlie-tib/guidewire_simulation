@@ -18,7 +18,7 @@ class Simulator(Sofa.Core.Controller):
     def __init__(
             self,
             root_node,
-            dt=0.01,
+            dt=0.001,
             gravity=[0, 0, 0],
             friction_coef=.04,
             *args, **kwargs):
@@ -79,19 +79,19 @@ class Simulator(Sofa.Core.Controller):
             mu=str(friction_coef),
             tolerance='1e-6',
             maxIt='10000',
-            build_lcp='false')
+            build_lcp='true')
         self.root_node.addObject(
             'CollisionPipeline',
             draw='0',
             depth='6',
-            verbose='1')
+            verbose='0')
         self.root_node.addObject(
             'BruteForceDetection',
             name='N2')
         self.root_node.addObject(
             'LocalMinDistance',
-            contactDistance='0.002',
-            alarmDistance='0.003',
+            contactDistance='0.0001',
+            alarmDistance='0.0005',
             name='localmindistance',
             angleCone='0.02')
         self.root_node.addObject(

@@ -56,53 +56,42 @@ class ControllerSofa(Sofa.Core.Controller):
 
         self.print_insertion_length = False
         self._step_count = 0
+        self._last_xtip = self.instrument.IRC.xtip.value[0]
 
     def onAnimateBeginEvent(self, event):
         self._step_count += 1
         if self._step_count % 100 == 0:
             print(f"ControllerSofa Heartbeat: Simulation is running (Step {self._step_count})")
+        
+        # 监控 xtip 是否发生异常跳变
+        curr_xtip = self.instrument.IRC.xtip.value[0]
+        if abs(curr_xtip - self._last_xtip) > 1e-7:
+            print(f"[IRC MONITOR] xtip changed: {self._last_xtip:.6f} -> {curr_xtip:.6f} (delta: {curr_xtip - self._last_xtip:.6f}m)")
+            self._last_xtip = curr_xtip
 
-    def onEvent(self, event):
-        if event['type'] == 'KeypressedEvent':
-            print(f"ControllerSofa detected Key: {event['key']}")
+        if self.print_insertion_length:
+            print(f"Current insertion length: {self.instrument.insertion_len}")
 
     def onKeypressedEvent(self, event):
         ''' Send magnetic field and insertion inputs when keys are pressed.'''
-
         # Increment field angle in rad
         dfield_angle = 3.*np.pi/180
-        # speed = 0.01
-
         key = event['key']
-        # J key : z-rotation +
-        if ord(key) == 76:
-
+        # J / L key : z-rotation
+        if key.upper() == 'L':
             r = R.from_rotvec(-dfield_angle * np.array([0, 0, 1]))
-            self.mag_controller.field_des = r.apply(
-                self.mag_controller.field_des)
-
-        # L key : z-rotation -
-        if ord(key) == 74:
-
+            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
+            print(f"Magnetic field rotated (L): {self.mag_controller.field_des}")
+        elif key.upper() == 'J':
             r = R.from_rotvec(dfield_angle * np.array([0, 0, 1]))
-            self.mag_controller.field_des = r.apply(
-                self.mag_controller.field_des)
-
-        # I key : x-rotation +
-        if ord(key) == 73:
-
+            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
+            print(f"Magnetic field rotated (J): {self.mag_controller.field_des}")
+        # I / K key : x-rotation
+        elif key.upper() == 'I':
             r = R.from_rotvec(-dfield_angle * np.array([1, 0, 0]))
-            self.mag_controller.field_des = r.apply(
-                self.mag_controller.field_des)
-
-        # K key : x-rotation -
-        if ord(key) == 75:
-
+            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
+            print(f"Magnetic field rotated (I): {self.mag_controller.field_des}")
+        elif key.upper() == 'K':
             r = R.from_rotvec(dfield_angle * np.array([1, 0, 0]))
-            self.mag_controller.field_des = r.apply(
-                self.mag_controller.field_des)
-
-    def onAnimateBeginEvent(self, event):
-
-        if self.print_insertion_length:
-            print(self.instrument.insertion_len)
+            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
+            print(f"Magnetic field rotated (K): {self.mag_controller.field_des}")

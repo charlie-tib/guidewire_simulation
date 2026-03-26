@@ -90,22 +90,18 @@ class Instrument(Sofa.Core.Controller):
 
         topoLines_guide = self.root_node.addChild(name+'_topo_lines')
         
-        # 添加材质分段 (v25.12+ 适配)
-        topoLines_guide.addObject('RodStraightSection', name='BodySection', 
-                                   youngModulus=young_modulus_body, poissonRatio=0.33, 
-                                   radius=self.outer_diam_qu/2.0, length=length_body,
-                                   nbEdgesCollis=num_elem_body, nbEdgesVisu=num_elem_body)
-        
-        topoLines_guide.addObject('RodStraightSection', name='TipSection', 
+        # 合并为单一段，彻底消除 34mm 处的拓扑衔接点
+        topoLines_guide.addObject('RodStraightSection', name='FullSection', 
                                    youngModulus=young_modulus_tip, poissonRatio=0.33, 
-                                   radius=self.outer_diam_qu/2.0, length=length_tip,
-                                   nbEdgesCollis=num_elem_tip, nbEdgesVisu=num_elem_tip)
+                                   radius=self.outer_diam_qu/2.0, length=length_body + length_tip,
+                                   nbEdgesCollis=num_elem_body + num_elem_tip, 
+                                   nbEdgesVisu=num_elem_body + num_elem_tip)
 
         topoLines_guide.addObject(
             'WireRestShape',
             name='InstrRestShape',
             template='Rigid3d',
-            wireMaterials='@BodySection @TipSection',
+            wireMaterials='@FullSection',
             printLog=True)
             
         topoLines_guide.addObject(
@@ -114,10 +110,6 @@ class Instrument(Sofa.Core.Controller):
         topoLines_guide.addObject(
             'EdgeSetTopologyModifier',
             name='Modifier')
-        topoLines_guide.addObject(
-            'EdgeSetGeometryAlgorithms',
-            name='GeomAlgo',
-            template='Rigid3d')
         topoLines_guide.addObject(
             'EdgeSetGeometryAlgorithms',
             name='GeomAlgo',
@@ -132,7 +124,7 @@ class Instrument(Sofa.Core.Controller):
             'EulerImplicitSolver',
             rayleighStiffness=0.2,
             printLog=False,
-            rayleighMass=0.0)
+            rayleighMass=0.05)
         self.InstrumentCombined.addObject(
             'BTDLinearSolver',
             verification=False,
@@ -142,7 +134,7 @@ class Instrument(Sofa.Core.Controller):
             name='meshLinesCombined',
             zmax=1, zmin=1,
             nx=self.num_elem_body+self.num_elem_tip + 1, ny=1, nz=1,
-            xmax=0.2, xmin=0, ymin=0, ymax=0)
+            xmax=length_body+length_tip, xmin=0, ymin=0, ymax=0)
         self.MO = self.InstrumentCombined.addObject(
             'MechanicalObject',
             showIndices=False,
@@ -195,7 +187,7 @@ class Instrument(Sofa.Core.Controller):
             'InterventionalRadiologyController',
             xtip=[0.001], name='m_ircontroller',
             instruments='InterpolGuide',
-            step=0.01,
+            step=0.0005,
             printLog=True,
             listening=True,
             template='Rigid3d',
@@ -247,11 +239,11 @@ class Instrument(Sofa.Core.Controller):
             name='collisMap')
         Collis.addObject(
             'LineCollisionModel',
-            proximity=0.0,
+            proximity=0.0002,
             group=1)
         Collis.addObject(
             'PointCollisionModel',
-            proximity=0.0,
+            proximity=0.0002,
             group=1)
 
         # VISU ROS

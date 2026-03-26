@@ -16,8 +16,8 @@ from mcr_sim import \
 cal_path = '/home/wen-zheng/guidewire_simulation/Navion_2_Calibration_24-02-2020.yaml'
 
 # Parameters instrument
-young_modulus_body = 170e6  # (Pa)
-young_modulus_tip = 21e6    # (Pa)
+young_modulus_body = 21e6    # (Pa)
+young_modulus_tip = 21e6     # (Pa)
 length_body = 0.5           # (m)
 length_tip = 0.034          # (m)
 outer_diam = 0.00133        # (m)
