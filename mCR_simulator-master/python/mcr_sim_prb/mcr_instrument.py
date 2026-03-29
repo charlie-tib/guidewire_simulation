@@ -28,11 +28,13 @@ class Instrument(Sofa.Core.Controller):
             fixed_directions=[0, 0, 0, 0, 0, 0],
             color=[0.2, .8, 1., 1.],
             segments=None,
+            main_direction=[0, 0, 1],
             *args, **kwargs):
 
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
         self.root_node = root_node
+        self.main_direction = main_direction
 
         self.magnets = magnets
         # 索引计算逻辑保持不变，确保控制器能找到 3 个磁铁
@@ -168,7 +170,7 @@ class Instrument(Sofa.Core.Controller):
             startingPos=T_start_sim,
             rotationInstrument=[0.],
             speed=1e-12,
-            mainDirection=[0, 0, 1],
+            mainDirection=self.main_direction,
             threshold=5e-9,
             controlledInstrument=0)
         self.InstrumentCombined.addObject(

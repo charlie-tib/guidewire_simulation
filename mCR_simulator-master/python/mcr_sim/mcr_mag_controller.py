@@ -1,3 +1,4 @@
+# 磁力矩计算单元，根据目标磁场对导丝各磁针施加物理力矩。
 import Sofa
 import numpy as np
 from splib3.numerics import Quat, Vec3

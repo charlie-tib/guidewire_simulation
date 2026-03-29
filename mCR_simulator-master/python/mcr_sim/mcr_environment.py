@@ -1,3 +1,4 @@
+# 构建仿真环境（如血管 STL 模型）的视觉与碰撞引擎。
 import Sofa
 from scipy.spatial.transform import Rotation as R
 

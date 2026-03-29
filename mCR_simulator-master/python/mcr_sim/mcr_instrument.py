@@ -1,3 +1,4 @@
+# 基于梁理论 (Beam Theory) 的磁控导丝机械结构与拓扑定义。
 import Sofa
 import numpy as np
 

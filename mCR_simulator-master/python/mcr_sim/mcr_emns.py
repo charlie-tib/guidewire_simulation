@@ -1,3 +1,4 @@
+# 电子受控磁控导航系统 (eMNS) 模型，负责磁场与电流的转换逻辑。
 import numpy as np
 from mag_manip import mag_manip
 
