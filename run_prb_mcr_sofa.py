@@ -12,11 +12,8 @@ from scipy.spatial.transform import Rotation as R
 
 # Note: We import from mcr_sim_prb instead of mcr_sim
 from mcr_sim_prb import \
-    mcr_environment, mcr_instrument, mcr_emns, mcr_simulator, \
+    mcr_environment, mcr_instrument, mcr_external_magnet, mcr_simulator, \
     mcr_controller_sofa, mcr_magnet
-
-# Calibration file for eMNS (Absolute paths)
-cal_path = '/home/wen-zheng/guidewire_simulation/Navion_2_Calibration_24-02-2020.yaml'
 
 # === PRB Hardware Parameters ===
 outer_diam = 0.002          # 1.0 mm
@@ -120,8 +117,15 @@ def createScene(root_node):
     ''' Build SOFA scene '''
     # 显式开启重力 (9.81)，并设置摩擦
     simulator = mcr_simulator.Simulator(root_node=root_node, gravity=[0, -9.81, 0], friction_coef=0.1)
-    
-    navion = mcr_emns.EMNS(name='Navion', calibration_path=cal_path)
+    # 将外部永磁铁初始化在血管正上方 10cm 处
+    # 注意：真实血管被向下平移了0.45m，所以血管在Y ~ -0.47m 处
+    # 我们将磁铁放在 Y = -0.37m 处
+    external_magnet = mcr_external_magnet.ExternalMagnet(
+        root_node=root_node,
+        name='ExternalMagnet',
+        init_pos=[0., -0.37, 0.],
+        init_rot=[0., 0., 0.]
+    )
     
     # --- 横向摆放修正 ---
     # 将整个物理世界 (血管 + 导丝起始点) 绕 X 轴统一旋转 90 度
@@ -185,7 +189,7 @@ def createScene(root_node):
     controller_sofa = mcr_controller_sofa.ControllerSofa(
         name='ControllerSofa',
         root_node=root_node,
-        e_mns=navion,
+        external_magnet=external_magnet,
         instrument=instrument,
         T_sim_mns=T_sim_mns,
     )

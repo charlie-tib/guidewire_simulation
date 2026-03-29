@@ -25,34 +25,29 @@ class ControllerSofa(Sofa.Core.Controller):
     def __init__(
             self,
             root_node,
-            e_mns,
+            external_magnet,
             instrument,
             T_sim_mns,
-            mag_field_init=np.array([0.01, 0.01, 0.]),
             *args, **kwargs):
 
         # These are needed (and the normal way to override from a python class)
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
         self.root_node = root_node
-        self.e_mns = e_mns
+        self.external_magnet = external_magnet
         self.instrument = instrument
         self.T_sim_mns = T_sim_mns
         self.listening = True
-        self.mag_field_init = mag_field_init
 
         self.dfield_angle = 0.
 
         self.mag_controller = mcr_mag_controller.MagController(
             name='mag_controller',
-            root_node=self.root_node,
-            e_mns=self.e_mns,
+            external_magnet=self.external_magnet,
             instrument=self.instrument,
             T_sim_mns=self.T_sim_mns,
             )
         self.root_node.addObject(self.mag_controller)
-
-        self.mag_controller.field_des = self.mag_field_init
 
         self.print_insertion_length = False
         self._step_count = 0
@@ -79,19 +74,36 @@ class ControllerSofa(Sofa.Core.Controller):
         key = event['key']
         # J / L key : z-rotation
         if key.upper() == 'L':
-            r = R.from_rotvec(-dfield_angle * np.array([0, 0, 1]))
-            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
-            print(f"Magnetic field rotated (L): {self.mag_controller.field_des}")
+            self.external_magnet.rotate_magnet([0, 0, 1], -dfield_angle)
+            print(f"External Magnet rotated (L): {self.external_magnet.m_epm_dir}")
         elif key.upper() == 'J':
-            r = R.from_rotvec(dfield_angle * np.array([0, 0, 1]))
-            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
-            print(f"Magnetic field rotated (J): {self.mag_controller.field_des}")
+            self.external_magnet.rotate_magnet([0, 0, 1], dfield_angle)
+            print(f"External Magnet rotated (J): {self.external_magnet.m_epm_dir}")
         # I / K key : x-rotation
         elif key.upper() == 'I':
-            r = R.from_rotvec(-dfield_angle * np.array([1, 0, 0]))
-            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
-            print(f"Magnetic field rotated (I): {self.mag_controller.field_des}")
+            self.external_magnet.rotate_magnet([1, 0, 0], -dfield_angle)
+            print(f"External Magnet rotated (I): {self.external_magnet.m_epm_dir}")
         elif key.upper() == 'K':
-            r = R.from_rotvec(dfield_angle * np.array([1, 0, 0]))
-            self.mag_controller.field_des = r.apply(self.mag_controller.field_des)
-            print(f"Magnetic field rotated (K): {self.mag_controller.field_des}")
+            self.external_magnet.rotate_magnet([1, 0, 0], dfield_angle)
+            print(f"External Magnet rotated (K): {self.external_magnet.m_epm_dir}")
+            
+        # Translation controls (A/D for X, W/S for Y, Q/E for Z)
+        d_pos = 0.005 # 5 mm per press for fine control
+        if key.upper() == 'A':
+            self.external_magnet.translate_magnet([-d_pos, 0, 0])
+            print(f"External Magnet translated to: {self.external_magnet.pos}")
+        elif key.upper() == 'D':
+            self.external_magnet.translate_magnet([d_pos, 0, 0])
+            print(f"External Magnet translated to: {self.external_magnet.pos}")
+        elif key.upper() == 'W':
+            self.external_magnet.translate_magnet([0, d_pos, 0])
+            print(f"External Magnet translated to: {self.external_magnet.pos}")
+        elif key.upper() == 'S':
+            self.external_magnet.translate_magnet([0, -d_pos, 0])
+            print(f"External Magnet translated to: {self.external_magnet.pos}")
+        elif key.upper() == 'Q':
+            self.external_magnet.translate_magnet([0, 0, -d_pos])
+            print(f"External Magnet translated to: {self.external_magnet.pos}")
+        elif key.upper() == 'E':
+            self.external_magnet.translate_magnet([0, 0, d_pos])
+            print(f"External Magnet translated to: {self.external_magnet.pos}")

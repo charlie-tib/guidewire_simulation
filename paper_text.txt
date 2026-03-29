@@ -1,0 +1,629 @@
+RL-MG: Reinforcement Learning Framework for Magnetic Guidewire
+Path Following
+Jun Luo1,2, Zhiqiang Chen 1,2, Mingxue Cai 2, Shunyuan Huang 2, Shixiong Fu 2,
+Dong Li2, Chenyang Huang 2, Tiantian Xu 2
+Abstract— Magnetic guidewires (MG), featuring active steer-
+ing capabilities, show great potential for enhancing inter-
+ventional surgery due to their ﬂexibility and controllability.
+However, achieving real-time autonomous navigation of a MG
+within complex vascular networks remains a major challenge.
+This study presents a reinforcement learning (RL)-based control
+framework for MG path following in vascular navigation tasks.
+The tip of the MG is equipped with an embedded small
+permanent magnet, enabling magnetic actuation via a movable
+external magnet (EM). The proposed RL framework is trained
+in a Simulation Open Framework Architecture (SOFA)-based
+simulation, where it learns to control the motion of the EM and
+the translation of the MG to accurately follow a predeﬁned
+reference path. To validate the effectiveness of the trained
+RL policy, an experimental setup is established, comprising an
+MG prototype, an EM mounted on a robotic arm, a vascular
+phantom model, and a depth camera for visual feedback.
+Experimental results demonstrate that the RL policy achieves
+reliable path following performance in physical environments,
+with an overall mean tracking error of 3.39 ± 1.87 mm (mean
+± SD) across all four tested paths.
+I. I NTRODUCTION
+Small-scale soft continuum systems can achieve remote-
+controlled active steering and navigation via tendon-
+driven [1], pneumatic [2], hydraulic [3], magnetic [4], or
+hybrid actuation methods [5]. Among these, magnetic actu-
+ation has attracted signiﬁcant attention due to its contactless
+control, biocompatibility, and low mechanical complexity.
+Magnetic continuum robots (MCRs) improve controllabil-
+ity by incorporating magnetized tips—such as embedded
+permanent magnets [6] or magnetic particles [7]—and are
+actuated via externally applied magnetic ﬁelds, either from
+permanent magnets or electromagnets. Various innovative
+MCR designs have been developed, including submillimeter-
+scale soft robots with ferromagnetic hydrogel skins [8],
+*This work was supported in part by National Key Research and
+Development Project under Grant 2023YFB4705300; in part by Na-
+tional Natural Science Foundation of China Under Grant U22A2064,
+62403448; in part by National Natural Science Foundation of China (grant
+No.62473360), in part by the Shenzhen Science and Technology Program
+under Grant JCYJ20240813154939050; in part by the Shenzhen Science
+and Technology Program under Grant JCYJ20220818101611025, Grant
+RCJC20231211085926038; in part by the Guangdong Basic and Applied
+Basic Research Foundation 2022B1515120010; in part by the Guangdong
+Basic and Applied Basic Research Foundation 2025A1515010715; in part
+by SIAT-CUHK Joint Laboratory of Robotics and Intelligent Systems.
+(Corresponding author: Tiantian Xu)
+1University of Chinese Academy of Sciences
+2The Guangdong Provincial Key Laboratory of Robotics and Intelligent
+System, Shenzhen Institutes of Advanced Technology, Chinese Academy of
+Sciences, Shenzhen 518055, China
+9 DVFXODU0RGHO
+0DJQHWLF*XLGHZLUH0*
+1
+6
+([WHUQDO0DJQHW(0
+5HIHUHQFH 3DWK
+Fig. 1. System overview showing the vascular model, magnetic guidewire
+(MG), and external magnet (EM). The MG tip is guided along a predeﬁned
+trajectory by controlling its translation and steering via EM position and
+orientation.
+variable-stiffness catheter robots [9], intraoperatively pro-
+grammable continuum robots [10], and multi-arm robotic
+catheter systems [11], aiming to enhance ﬂexibility and
+navigational capability in constrained environments.
+Despite these advancements in mechanical design, achiev-
+ing precise and efﬁcient control of MCRs remains challeng-
+ing due to the nonlinear and uncertain nature of magnetic
+ﬁelds. Traditional control strategies based on rod theory [12],
+[13] and energy-based modeling [14], [15] have provided
+valuable insights but often fall short in handling complex dy-
+namics and real-world variability. In this context, reinforce-
+ment learning (RL) has emerged as a promising solution,
+offering the ability to learn adaptive control policies directly
+from interaction with the environment. Recent studies have
+demonstrated the potential of RL in robot-assisted surgi-
+cal tasks, including cooperative multi-agent systems [16],
+autonomous guidewire navigation [17], and SOFA-based
+simulation environments tailored for MCR applications [18],
+[19]. Building on these developments, further efforts have
+addressed sim-to-real transfer for surgical automation [20],
+RL for ultrasound-guided probe control [21], learning-based
+multimode magnetic actuation [22], and closed-loop control
+            Proc of the 2025 IEEE International  
+Conference on Real-time Computing and Robotics 
+             June 1 - 6, 2025,  Toyama, Japan
+979-8-3315-0205-8/25/$31.00 ©2025 IEEE 1179
+2025 IEEE International Conference on Real-time Computing and Robotics (RCAR) | 979-8-3315-0205-8/25/$31.00 ©2025 IEEE | DOI: 10.1109/RCAR65431.2025.11139440
+Authorized licensed use limited to: BEIJING INSTITUTE OF TECHNOLOGY. Downloaded on March 24,2026 at 02:51:32 UTC from IEEE Xplore.  Restrictions apply. with real-time shape feedback in soft continuum robots [23].
+Building upon these efforts, this paper proposes an RL-
+based control framework for magnetic guidewire navigation.
+The framework is implemented in a SOFA-based simulation
+environment [24], where MG dynamics are modeled using
+the BeamAdapter plugin [25], and magnetic actuation is
+realized through external permanent magnets. The RL agent
+learns to coordinate both the movement of the EM and the
+guidewire trajectory to achieve high-precision path follow-
+ing. The trained policy is validated through experiments
+conducted in both simulation and on a real system. The
+main contribution of this work is the development of a com-
+plete and transferable RL-based framework that integrates
+magnetic actuation, high-ﬁdelity simulation, and real-world
+validation, providing a practical platform for applying and
+benchmarking intelligent control strategies in magnetically
+actuated vascular navigation.
+The structure of this paper is organized as follows: Section
+II presents the system design and modeling; Section III in-
+troduces the reinforcement learning-based control framework
+and training process; Section IV describes the experimental
+setup and results; and Section V concludes the paper and
+discusses future research directions.
+II. S
+YSTEM DESIGN AND MODELING
+As shown in Fig. 1, the system consists of an external
+magnet (EM), a vascular model, and a magnetic guidewire
+(MG) with a small permanent magnet embedded at its tip.
+The EM generates a magnetic ﬁeld that applies torque to
+the MG tip, enabling steering. The vascular model mimics
+the anatomical environment for guidewire navigation. By
+controlling both the EM motion and the MG translation,
+the system guides the MG along a predeﬁned reference
+trajectory.
+The MG’s mechanical behavior is simulated in the SOFA
+framework [24] using the BeamAdapter plugin [25], based
+on Kirchhoff rod theory. The guidewire is discretized into
+n nodes using a one-dimensional ﬁnite element method.
+Contact with the vascular wall is handled via the Lagrange
+multiplier method [18].
+The magnetic interaction is modeled using a dipole ap-
+proximation, assuming both the EM and MG tip magnets
+act as point dipoles. As shown in Fig. 2, let p
+em ∈R3 and
+mem ∈R3 denote the EM’s position and magnetic moment,
+and ptip ∈R3 and mtip ∈R3 represent the MG tip’s position
+and magnetic moment. The relative position vector and its
+unit direction are deﬁned as:
+r = p
+tip −pem, ˆr = r
+∥r∥ (1)
+The magnetic ﬁeld at the MG tip is:
+B(r)= μ0
+4π · 3(mem · ˆr)ˆr−mem
+∥r∥3 (2)
+The resulting torque is:
+τ = mtip × B(r) (3)
+0DJQHWLF*XLGHZLUH0*
+%
+5LJLGWLS
+([WHUQDO0DJQHW(0
+16
+5HODWLYHGLVWDQFH
+U
+)OH[LEOH
+VHFWLRQ
+࣎
+[
+\
+]
+Fig. 2. Magnetic dipole model of the MG tip and the EM, showing
+their relative positions, displacement vector, generated magnetic ﬁeld, and
+resulting torque.
+This torque causes deﬂection at the MG tip, inﬂuencing its
+trajectory. The deﬂection depends on the torque magnitude
+and MG’s mechanical stiffness.
+III. M
+ETHOD
+In this section, we present the reinforcement learning con-
+trol framework for the magnetic guidewire (RL-MG), using
+RL methods to control MG to reach the target point along the
+centerline of the vascular model, as shown in Fig. 3. The task
+is formulated as a Markov Decision Process (MDP), where
+the RL-MG agent interacts with the environment (vascular
+model) and the EM through a sequence of states, actions,
+and rewards to learn an optimal policy for effective path
+tracking and navigation. We apply the Deep Deterministic
+Policy Gradient (DDPG) algorithm, and also use several
+regularization techniques to stabilize the training process. For
+the real-world experiments, a depth camera and YOLOv11
+[26] are used to localize the guidewire tip.
+1) Environment: Training directly in the real world is
+inefﬁcient and unsafe, especially with the EM mounted on
+a robotic manipulator. Therefore, a simulation environment
+based on SOFA [24] and BeamAdapter [25] is developed.
+As shown in Fig. 1 and Fig. 3(a), the system includes a
+vascular model, an MG, and a cylindrical EM. The EM’s
+magnetic ﬁeld is obtained via COMSOL, and users can
+control the EM’s 6-DOF motion and MG insertion via a
+keyboard interface. The trained agent is evaluated in both
+simulation and real-world settings.
+2) States: As shown in Fig. 3(b), the overall state repre-
+sentation consists of the pose of the EM, the position of the
+MG tip, and the future reference path information, where
+the future path information includes two vectors: signed
+distances and deﬂection angles to the next 10 reference
+points, resulting in a 24-dimensional state vector. The state
+vector is deﬁned as:
+s
+t =[ Tem, θz, Px, Py, dt , rt ] (4)
+Speciﬁcally, Tem and θz represent the y-position and rotation
+of the EM around the z-axis. Px and Py denote the coordinates
+of the MG tip. The vectors dt ∈R10 and rt ∈R10 represent
+the signed distances and deﬂection angles to the next 10
+1180Authorized licensed use limited to: BEIJING INSTITUTE OF TECHNOLOGY. Downloaded on March 24,2026 at 02:51:32 UTC from IEEE Xplore.  Restrictions apply. 62)$
+VLPXODWLRQ
+5HDOZRUOG
+D (QYLURQPHQW E6WDWH
+(03RVH 7LS3RVLWLRQ
+F''3*$JHQW
+G$FWLRQVH5HZDUG
+$GYDQFH
+:LWKGUDZ
+=D[LV
+URWDWLRQ
+]
+\
+ \
+,QVHUWLRQ
+5HWUDFWLRQ
+[ [ [
+]
+'LVWDQFH
+UHZDUG
+&KHFNSRLQW
+UHZDUG
+9LRODWLRQV
+UHZDUG
+
+௧
+$FWRU
+௧ሻ
+&ULWLF
+௧,௧ሻ௧
+௧
+ሻ
+5HIHIHQFH3DWK
+௧
+Fig. 3. Overview of the RL control framework for magnetic guidewire (RL-MG). (a) The RL environment includes both SOFA-based simulation and
+real-world deployment. (b) The state st comprises the EM pose, MG tip position, and future reference path points. (c) The Actor network outputs action
+at , evaluated by the Critic to update the policy. (d) RL actions include EM translation (y-axis), EM rotation (z-axis), and MG advancement. (e) The rewar d
+combines distance, checkpoint, and constraint penalty terms. The objective is to guide the MG along the vessel centerline toward the target.
+reference path points, respectively. All state components are
+normalized within predeﬁned ranges to [0, 1]. Since the task
+is conducted in a 2D setting, the z-coordinate is omitted.
+3) DDPG Agent: Deep Deterministic Policy Gradient
+(DDPG) [27] is an actor-critic reinforcement learning algo-
+rithm designed for continuous action spaces. It uses deep
+neural networks to approximate both the policy (Actor) and
+value function (Critic), and employs experience replay and
+target networks to stabilize training. At each time step, the
+Actor selects actions based on the current state s
+t , while
+the Critic evaluates them by estimating the action-value
+Q(s
+t , at ). For the task in this paper, where the action space is
+continuous and the agent needs to track a path and navigate in
+a high-dimensional environment, DDPG is well-suited. The
+following sections will describe how the Actor network is
+updated using the deterministic policy gradient, while the
+Critic is updated based on the Bellman equation.
+Actor Update: The policy gradient is computed by tak-
+ing the gradient of the action-value function Q(s
+t , at ) with
+respect to the Actor’s parameters θμ , as follows:
+∇θμ J(θμ )= Est
+[
+∇θμ μθμ (st )∇aQθQ (st , at )
+]
+(5)
+where μθμ (st ) is the action selected by the Actor for state
+st , and QθQ (st , at ) is the action-value function estimated by
+the Critic.
+Critic Update: The Critic is updated by minimizing the
+Bellman error. The target for the Critic network is computed
+as:
+y = r
+t + γQθ′
+Q
+(st+1, μθμ′ (st+1)) (6)
+where rt is the reward at time step t, γ is the discount factor,
+and μθμ′ (st+1) is the next action predicted by the target Actor
+network.
+The loss function for the Critic is then given by:
+L(θQ)= Est ,at
+[ (
+QθQ (st , at )−y
+) 2]
+(7)
+Regularization for Stability: To stabilize training, several
+regularization techniques are employed, such as L2 regu-
+larization. The loss function for both the Actor and Critic
+networks is augmented with L2 regularization terms:
+L
+total = L(θQ)+ λ∥θμ∥2
+2 + λ∥θQ∥2
+2 (8)
+where λ is the regularization coefﬁcient, and ∥θμ∥2
+2 and
+∥θQ∥2
+2 are the L2 regularization terms for the Actor and Critic
+networks, respectively.
+By employing these techniques, DDPG stabilizes the train-
+ing process and ensures more effective learning, especially
+in continuous action spaces.
+4) Actions: The policy π maps the current state s
+t to an
+action at , π : st → at . At each time step t, the policy network
+outputs an action vector, as shown in Fig. 3(d):
+at =
+[
+ΔTem, Δθz, ΔPmg
+]
+(9)
+where ΔTem is the EM translation along the y-axis, Δθz is
+the EM rotation around the z-axis, and ΔPmg denotes MG
+insertion or retraction. The outputs of the policy network
+lie in [−1,1], and are scaled by their respective maximum
+values: ΔT
+em = 0.001 m, Δθz = π /180 rad, and ΔPmg = 0.001
+m.
+It is worth noting that, in the 2D setting of this study,
+selecting only 2 DOFs for the EM—translation along the
+y-axis and rotation around the z-axis—is sufﬁcient. These
+two control inputs allow the EM to provide the achievable
+magnetic torque to the small magnet at the MG tip at any
+time. This choice reduces system complexity and facilitates
+1181Authorized licensed use limited to: BEIJING INSTITUTE OF TECHNOLOGY. Downloaded on March 24,2026 at 02:51:32 UTC from IEEE Xplore.  Restrictions apply. 'HSWK&DPHUD
+*XLGHZLUH
+$GYDQFHU
+([WHUQDO0DJQHW9DVFXODU0RGHO
+0DJQHWLF
+*XLGHZLUH
+Fig. 4. Overview of the experimental setup.
+the transfer of the simulation-trained policy to the physical
+system.
+5) Rewards: As shown in Fig. 3(e), the immediate reward
+rt at each time step t consists of three components: distance,
+checkpoint, and violation scores.
+Distance score: Encourages the MG tip to stay close to the
+reference path. If the deviation from the nearest checkpoint
+exceeds a threshold ε
+max, the task fails with a reward of
+−100. Otherwise, a negative reward proportional to the
+normalized distance error is applied.
+Checkpoint score: The path is discretized into checkpoints.
+When the MG tip reaches a new checkpoint, a reward rcp
+scaled by the square of the distance accuracy is given. If no
+new checkpoint is reached, a small penalty proportional to
+the distance error is applied.
+Violation score: If the EM’s translation or rotation exceeds
+workspace limits, a penalty of −100 is issued to constrain
+the motion within valid bounds.
+The combined immediate reward is:
+r
+t =
+⎧
+⎪⎨
+⎪⎩
+−100, if constraint violated
+rcp
+(
+1−∥Ptip −Pcp∥2)
+, if checkpoint reached
+−1
+2 rcp∥Ptip −Pcp∥, otherwise
+(10)
+where ∥·∥ denotes the normalized distance error, εmax is the
+maximum allowed deviation, and rcp is the base reward.
+IV . EXPERIMENTS AND RESULTS
+A. Experimental setup
+The experiments are conducted in a full-scale vascular
+model, as illustrated in Fig. 4. On the left side, a col-
+laborative robot (Universal Robots UR5, Universal Robots
+A/S, Odense, Denmark) is equipped with a 60 mm × 60
+mm permanent magnet attached to its end-effector. On the
+right side, a guidewire propulsion device is positioned, which
+has been previously described in detail in earlier work
+from our lab [4]. Inside the vascular model, a medical
+guidewire ﬁtted with a small permanent magnet at its tip
+serves as the controlled object. An Intel RealSense D455
+depth camera (Intel Corporation, Santa Clara, CA, USA)
+is mounted above the vascular model to capture depth data
+during experiments. The reinforcement learning model was
+trained on a workstation running Ubuntu 20.04, equipped
+with an Intel® Core™ i9-13900K CPU and an NVIDIA RTX
+4090 GPU. The GPU provided accelerated computation sup-
+port during model training. The Robotic Operating System
+(ROS, version Noetic) was used for system control and data
+communication.
+D7UDLQLQJVHW E7HVWVHW
+Fig. 5. The SOFA-based dataset consists of reference paths at vessel
+bifurcations: (a) manually designed training set, (b) test set reconstructed
+from real vascular models.
+B. Dataset and Training Settings
+In this study, the RL agent is trained in a SOFA-based
+simulation environment using datasets comprising multiple
+paths within vascular models, as shown in Fig. 5. To simulate
+real blood vessels, we designed various vascular models in
+SolidWorks, reserving a real femoral artery model for testing.
+The experimental setup provides the EM with two degrees of
+freedom: translation along the y-axis and rotation about the
+z-axis. To avoid collisions with the water tank and vascular
+structures, the magnet starts from either side of the tank.
+Due to rapid magnetic ﬁeld attenuation on the opposite side
+of the EM, insufﬁcient torque reaches the MG tip when the
+EM is positioned unilaterally. Therefore, reference paths are
+grouped into left-side and right-side categories.
+We adopted standard training settings for the DDPG agent,
+including a learning rate of 0.0001 for the policy network,
+0.001 for the Q-value network, a discount factor of 0.99,
+and trained for 400 episodes. Additionally, we employed the
+optimizer proposed in [28] to improve convergence speed
+and boost training efﬁciency.
+C. Results
+We verify the effectiveness and performance of our method
+by deploying the best trained model on a real-world system.
+Four paths in the vascular model are selected: two paths
+oriented along the larger x-axis direction and two along the
+smaller x-axis direction. Accordingly, the EM at the robot
+arm’s end-effector is initialized at different positions. At
+each time step, the states for RL are obtained from the UR5
+robot and depth camera, while the actions are generated by
+policy networks. These actions are sent to the UR5 and the
+guidewire advancer via ROS, guiding the guidewire along
+the selected reference path.
+1182Authorized licensed use limited to: BEIJING INSTITUTE OF TECHNOLOGY. Downloaded on March 24,2026 at 02:51:32 UTC from IEEE Xplore.  Restrictions apply. W V W VW VW V
+W V W VW VW V
+W V W VW VW V
+W V W VW VW V
+D
+G
+J
+M
+E F
+H I
+K L
+N O
+Fig. 6. Experimental results of MG path following in real-world experiments. Sub-ﬁgures (a)–(l) are organized in four rows, each representing one pa th
+(Path 1 to Path 4 from top to bottom), and three columns, corresponding to different result types. (a, d, g, j): Reference paths and recorded MG tip
+trajectories within the vascular model. (b, e, h, k): MG tip and EM positions at selected time points, with depth camera views (top) and external views
+(bottom); the red dotted line indicates the reference path, the green box marks the detected MG tip, and the yellow box shows its enlarged position. (c, f,
+i, l): Tracking error plots, where the red line indicates the instantaneous error and the blue line shows the average error.
+Fig. 6 presents the experimental results, with three repli-
+cate experiments performed for each path. The left sub-
+ﬁgures provide four reference paths and the recorded MG tip
+positions during the experiment, shown within the vascular
+model. The middle four sub-ﬁgures display the positions of
+the MG tip and EM at four selected time points. Each pair
+of images includes the cropped depth camera view above
+and the external view below. In the camera views, the red
+dotted line denotes the reference path, and the green box
+marks the MG tip detected by YOLOv11. The detected MG
+tip position is enlarged and displayed in a yellow box. The
+external views demonstrate the movements and rotations of
+the EM. The tracking errors are presented in the rightmost
+four sub-ﬁgures, with the red line indicating instantaneous
+tracking error and the blue line indicating the average error.
+TABLE I
+MG PATH FOLLOWING RESULTS IN SIMULATION AND REAL -WORLD
+EXPERIMENTS
+Env. Metric Path 1 Path 2 Path 3 Path 4
+Sim Error (mm) 2 .5± 1.02 3 .1± 1.15 2 .2± 0.98 2 .4± 1.36
+Time (s) 7.0 13.0 12.0 9.0
+Real Error (mm) 3 .6± 1.82 3 .8± 2.04 3 .1± 1.55 2 .8± 1.96
+Time (s) 31.0 64.0 45.0 67.0
+The experimental results, summarized in Table I, demon-
+strate the effectiveness of our method in both simulated and
+real-world environments. All tracking errors are reported
+as mean ± standard deviation (SD) over three repeated
+trials for each path. In simulation, the RL agent achieved
+relatively small positional errors and short task completion
+times. In the real-world experiments, although the agent
+maintained comparable positional accuracy, the completion
+time was notably longer. This discrepancy primarily arises
+from limitations in the depth camera’s detection accuracy —
+the MG tip occupies a very small number of pixels (20–30
+pixels), which introduces localization errors in the detection.
+Furthermore, inherent differences between the simulated and
+real environments make it difﬁcult to ensure accurate state
+estimation, which contributes to the increased task duration.
+As illustrated in Fig. 6, the agent occasionally misinterpreted
+the MG tip’s deviation from the reference path (e.g., path
+2 from t = 0 s to t = 34 s, and path 4 from t = 11 s to
+t = 45 s), resulting in excessive time spent correcting small
+deviations. In these cases, the agent tended to slow down the
+MG movement and adjust its position via EM manipulation
+or rotation to stay close to the reference path.
+It is worth noting that a direct comparison with tradi-
+tional model-based control methods is not included in this
+study. Such methods typically require accurate modeling of
+1183Authorized licensed use limited to: BEIJING INSTITUTE OF TECHNOLOGY. Downloaded on March 24,2026 at 02:51:32 UTC from IEEE Xplore.  Restrictions apply. the guidewire mechanics and magnetic interactions, which
+is challenging due to system nonlinearity and ﬂexibility.
+In contrast, our RL-based approach learns control policies
+directly from interaction data, providing a model-free alter-
+native for autonomous navigation. As existing studies in this
+area remain limited, our work offers a practical foundation
+for future benchmarking and development, and the fully
+automated control approach offers meaningful insights for
+robot-assisted surgical applications.
+V. C
+ONCLUSION
+This study presents an RL-based control framework for
+magnetic guidewire path following, trained in a SOFA-based
+simulation environment and validated through real-world
+experiments. The RL agent achieved low positional errors
+and short task completion times in simulation. In real-world
+experiments, although the system was able to complete the
+control tasks, the execution time increased due to perception
+inaccuracies and domain discrepancies between simulation
+and reality. Despite these challenges, our approach highlights
+the potential of RL-based autonomous guidewire control. The
+developed simulation environment offers a reliable platform
+for validating alternative control strategies, and the fully
+autonomous control method provides valuable insights for
+robot-assisted vascular interventions.
+In future work, we will explore the extension of the current
+2D framework to 3D navigation tasks by increasing the
+degrees of freedom of magnetic actuation (e.g., enabling
+3D positioning and orientation control of the external mag-
+net) and upgrading the state representation to include full
+3D positional and directional information. Combined with
+anatomically realistic 3D vascular models in simulation and
+experiment, these improvements will enhance the frame-
+work’s applicability to more clinically relevant scenarios.
+R
+EFERENCES
+[1] M. M. Dalvand, S. Nahavandi, and R. D. Howe, “An analytical
+loading model for n-tendon continuum robots,” IEEE Transactions on
+Robotics, vol. 34, no. 5, pp. 1215–1225, 2018.
+[2] J. D. Greer, T. K. Morimoto, A. M. Okamura, and E. W. Hawkes,
+“Series pneumatic artiﬁcial muscles (spams) and application to a soft
+continuum robot,” in 2017 IEEE International Conference on Robotics
+and Automation (ICRA) . IEEE, 2017, pp. 5503–5510.
+[3] S. I. Rich, R. J. Wood, and C. Majidi, “Untethered soft robotics,”
+Nature Electronics, vol. 1, no. 2, pp. 102–112, 2018.
+[4] S. Fu, B. Chen, D. Li, J. Han, S. Xu, S. Wang, C. Huang, M. Qiu,
+S. Cheng, X. Wu, et al. , “A magnetically controlled guidewire robot
+system with steering and propulsion capabilities for vascular inter-
+ventional surgery,” Advanced Intelligent Systems , vol. 5, no. 11, p.
+2300267, 2023.
+[5] J. Zhang, Q. Fang, P. Xiang, R. Xiong, Y . Wang, and H. Lu,
+“Soft hybrid actuated hierarchical bronchoscope robot for deep lung
+examination,” IEEE Robotics and Automation Letters , vol. 9, no. 1,
+pp. 811–818, 2023.
+[6] S. Jeon, A. K. Hoshiar, K. Kim, S. Lee, E. Kim, S. Lee, J.-y. Kim,
+B. J. Nelson, H.-J. Cha, B.-J. Yi, et al. , “A magnetically controlled
+soft microrobot steering a guidewire in a three-dimensional phantom
+vascular network,” Soft robotics, vol. 6, no. 1, pp. 54–68, 2019.
+[7] Y . Kim, H. Yuk, R. Zhao, S. A. Chester, and X. Zhao, “Printing fer-
+romagnetic domains for untethered fast-transforming soft materials,”
+Nature, vol. 558, no. 7709, pp. 274–279, 2018.
+[8] Y . Kim, G. A. Parada, S. Liu, and X. Zhao, “Ferromagnetic soft
+continuum robots,” Science robotics, vol. 4, no. 33, p. eaax7329, 2019.
+[9] C. Chautems, A. Tonazzini, D. Floreano, and B. J. Nelson, “A variable
+stiffness catheter controlled with an external magnetic ﬁeld,” in 2017
+IEEE/RSJ International Conference on Intelligent Robots and Systems
+(IROS). IEEE, 2017, pp. 181–186.
+[10] Y . Cao, Z. Yang, B. Hao, X. Wang, M. Cai, Z. Qi, B. Sun, Q. Wang,
+and L. Zhang, “Magnetic continuum robot with intraoperative mag-
+netic moment programming,” Soft Robotics , vol. 10, no. 6, pp. 1209–
+1223, 2023.
+[11] Z. Li, J. Li, Z. Wu, Y . Chen, M. Yeerbulati, and Q. Xu, “Design and hi-
+erarchical control of a homocentric variable stiffness magnetic catheter
+for multi-arm robotic ultrasound-assisted coronary intervention,” IEEE
+Transactions on Robotics , 2024.
+[12] S. Jeon and G. Jang, “Precise steering and unclogging motions of
+a catheter with a rotary magnetic drill tip actuated by a magnetic
+navigation system,” IEEE transactions on magnetics , vol. 48, no. 11,
+pp. 4062–4065, 2012.
+[13] C. Chautems, S. Lyttle, Q. Boehler, and B. J. Nelson, “Design and
+evaluation of a steerable magnetic sheath for cardiac ablations,” IEEE
+Robotics and Automation Letters , vol. 3, no. 3, pp. 2123–2128, 2018.
+[14] I. Tunay, “Spatial continuum models of rods undergoing large defor-
+mation and inﬂation,” IEEE Transactions on Robotics , vol. 29, no. 2,
+pp. 297–307, 2013.
+[15] D. Lin, N. Jiao, Z. Wang, and L. Liu, “A magnetic continuum robot
+with multi-mode control using opposite-magnetized magnets,” IEEE
+Robotics and Automation Letters , vol. 6, no. 2, pp. 2485–2492, 2021.
+[16] P. M. Scheikl, B. Gyenes, T. Davitashvili, R. Younis, A. Schulze, B. P.
+M¨uller-Stich, G. Neumann, M. Wagner, and F. Mathis-Ullrich, “Coop-
+erative assistance in robotic surgery through multi-agent reinforcement
+learning,” in 2021 IEEE/RSJ International Conference on Intelligent
+Robots and Systems (IROS) . IEEE, 2021, pp. 1859–1864.
+[17] J. Kweon, K. Kim, C. Lee, H. Kwon, J. Park, K. Song, Y . I. Kim,
+J. Park, I. Back, J.-H. Roh, et al. , “Deep reinforcement learning for
+guidewire navigation in coronary artery phantom,” IEEE Access, vol. 9,
+pp. 166 409–166 422, 2021.
+[18] R. Dreyfus, Q. Boehler, and B. J. Nelson, “A simulation framework for
+magnetic continuum robots,” IEEE Robotics and Automation Letters ,
+vol. 7, no. 3, pp. 8370–8376, 2022.
+[19] P. M. Scheikl, B. Gyenes, R. Younis, C. Haas, G. Neumann, M. Wag-
+ner, and F. Mathis-Ullrich, “Lapgym-an open source framework for
+reinforcement learning in robot-assisted laparoscopic surgery,” Journal
+of Machine Learning Research , vol. 24, no. 368, pp. 1–42, 2023.
+[20] Y . Ou and M. Tavakoli, “Sim-to-real surgical robot learning and
+autonomous planning for internal tissue points manipulation using re-
+inforcement learning,” IEEE Robotics and Automation Letters , vol. 8,
+no. 5, pp. 2502–2509, 2023.
+[21] K. Li, A. Li, Y . Xu, H. Xiong, and M. Q.-H. Meng, “Rl-tee:
+Autonomous probe guidance for transesophageal echocardiography
+based on attention-augmented deep reinforcement learning,” IEEE
+Transactions on Automation Science and Engineering , vol. 21, no. 2,
+pp. 1526–1538, 2023.
+[22] Y . Cao, M. Cai, B. Sun, Z. Qi, J. Xue, Y . Jiang, B. Hao, J. Zhu,
+X. Liu, C. Yang, et al., “Magnetic continuum robot with modular axial
+magnetization: Design, modeling, optimization, and control,” IEEE
+Transactions on Robotics , 2025.
+[23] G. Pittiglio, A. L. Orekhov, T. da Veiga, S. Cal `o, J. H. Chandler,
+N. Simaan, and P. Valdastri, “Closed loop static control of multi-
+magnet soft continuum robots,” IEEE Robotics and Automation Let-
+ters, vol. 8, no. 7, pp. 3980–3987, 2023.
+[24] F. Faure, C. Duriez, H. Delingette, J. Allard, B. Gilles, S. Marchesseau,
+H. Talbot, H. Courtecuisse, G. Bousquet, I. Peterlik, et al. , “Sofa: A
+multi-model framework for interactive physical simulation,” Soft tissue
+biomechanical modeling for computer assisted surgery , pp. 283–321,
+2012.
+[25] C. Duriez, S. Cotin, J. Lenoir, and P. Neumann, “New approaches to
+catheter navigation for interventional radiology simulation,” Computer
+aided surgery, vol. 11, no. 6, pp. 300–308, 2006.
+[26] G. Jocher and J. Qiu, “Ultralytics yolo11,” 2024. [Online]. Available:
+https://github.com/ultralytics/ultralytics
+[27] T. Lillicrap, “Continuous control with deep reinforcement learning,”
+arXiv preprint arXiv:1509.02971 , 2015.
+[28] X. Li, J. Luo, Z. Zheng, H. Wang, L. Luo, L. Wen, L. Wu, and S. Xu,
+“On the performance analysis of momentum method: A frequency
+domain perspective,” arXiv preprint arXiv:2411.19671 , 2024.1184Authorized licensed use limited to: BEIJING INSTITUTE OF TECHNOLOGY. Downloaded on March 24,2026 at 02:51:32 UTC from IEEE Xplore.  Restrictions apply. 

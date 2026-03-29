@@ -22,23 +22,17 @@ class MagController(Sofa.Core.Controller):
 
     def __init__(
             self,
-            e_mns,
+            external_magnet,
             instrument,
             T_sim_mns,
-            field_des=np.array([0., 0., 0.]),
             *args, **kwargs):
 
         # These are needed (and the normal way to override from a python class)
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
-        self.e_mns = e_mns
+        self.external_magnet = external_magnet
         self.instrument = instrument
         self.T_sim_mns = T_sim_mns
-        self.field_des = field_des
-
-        # We no longer use a single magnet_moment
-        self.BG = [0., 0., 0.]
-        self.num_nodes = len(self.instrument.index_mag)
 
         # Position of the entry point
         self.initPos = np.array([
@@ -48,11 +42,13 @@ class MagController(Sofa.Core.Controller):
 
     def onAnimateBeginEvent(self, event):
         '''
-        Apply the torque on the magntic nodes given a desired field and
-        the pose of the nodes.
+        Apply the torque on the magnetic nodes given the external magnet distance decay.
         '''
-
         self.num_nodes = len(self.instrument.MO.position)
+        forces_to_apply = {}
+
+        # Default fallback for visu
+        last_b_field = [0, 0, 0]
 
         for i in range(0, len(self.instrument.index_mag)):
             mag_idx = self.instrument.index_mag[i]
@@ -69,26 +65,18 @@ class MagController(Sofa.Core.Controller):
                     pos[0],
                     pos[1],
                     pos[2]]) +
-                self.initPos)  # pose of the tip in Navion frame
+                self.initPos)  # pose of the tip in absolute lab frame
 
-            currents = self.e_mns.field_to_currents(
-                field=self.field_des,
-                position=actualPos
-            )
-            field = self.e_mns.currents_to_field(
-                currents=currents,
-                position=actualPos
-            )
+            # Get distance-decaying field from the EM
+            B_field = self.external_magnet.get_b_field(actualPos)
+            last_b_field = B_field
 
-            self.BG = field
-
-            # Use individual magnet's dipole moment
+            # Use individual magnet's dipole moment magnitude
             m_mag = magnet.dipole_moment
             B = Vec3(
-                self.BG[0] * m_mag,
-                self.BG[1] * m_mag,
-                self.BG[2] * m_mag)
-            magnetic_field = B
+                B_field[0] * m_mag,
+                B_field[1] * m_mag,
+                B_field[2] * m_mag)
 
             # torque on magnet
             r_rot = R.from_quat([quat[0], quat[1], quat[2], quat[3]])
@@ -98,15 +86,18 @@ class MagController(Sofa.Core.Controller):
             X = r_rot.apply(local_m_dir)
             
             T = Vec3()
-            T = T.cross(X, magnetic_field)
+            T = T.cross(X, B)
 
-            # Update forces and torques
-            with self.instrument.CFF.forces.writeable() as forces:
-                # Apply torque to the specific node that corresponds to the magnet index
-                # CFF.indices are 0 to N-1 from the tip (indexFromEnd=True)
-                # So we use mag_idx (distance from tip) directly.
-                forces[mag_idx] = [0, 0, 0, T[0], T[1], T[2]]
+            # Store torque to apply
+            forces_to_apply[mag_idx] = [0, 0, 0, T[0], T[1], T[2]]
+
+        # Update forces and torques
+        with self.instrument.CFF.forces.writeable() as forces:
+            for m_idx, f in forces_to_apply.items():
+                forces[m_idx] = f
 
         # visualize magnetic field arrow in SOFA gui
         self.instrument.CFF_visu.forces = [[
-            magnetic_field[0], magnetic_field[1], magnetic_field[2], 0, 0, 0]]
+            last_b_field[0]*magnet.dipole_moment, 
+            last_b_field[1]*magnet.dipole_moment, 
+            last_b_field[2]*magnet.dipole_moment, 0, 0, 0]]
