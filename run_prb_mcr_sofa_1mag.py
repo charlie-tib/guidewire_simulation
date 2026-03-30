@@ -24,18 +24,16 @@ magnet_remanence = 1.2      # 1.2 T
 environment_stl = '/home/wen-zheng/guidewire_simulation/mCR_simulator-master/mesh/anatomies/J2-Naviworks.stl'
 
 # --- Define Segments ---
-# PRB structure: [50mm Proximal] + 3x [30mm Soft + 10mm Magnet]
+# PRB 1-Magnet structure: [450mm Proximal] + [110mm Soft + 10mm Magnet]
 segments = []
 # 1. Proximal Hard (Increased to match original 0.5m total length for better visibility/reach)
 segments.append({'length': 0.450, 'E': 500e6, 'num_elem': 45, 'is_magnet': False})
 
-# 3 Units
-polarities = [1.0, -1.0, 1.0]
-for i in range(3):
-    # Soft segment
-    segments.append({'length': 0.020, 'E': 250e6, 'num_elem': 2, 'is_magnet': False})
-    # Magnet segment (using high stiffness to simulate rigid magnet)
-    segments.append({'length': 0.020, 'E': 1000e6, 'num_elem': 1, 'is_magnet': True, 'polarity': polarities[i]})
+# 1 Unit at the tip
+# Soft segment (20mm)
+segments.append({'length': 0.020, 'E': 250e6, 'num_elem': 2, 'is_magnet': False})
+# Single Magnet segment at the tip (using high stiffness to simulate rigid magnet)
+segments.append({'length': 0.010, 'E': 1000e6, 'num_elem': 1, 'is_magnet': True, 'polarity': 1.0})
 
 # --- Setup Magnets List for Controller ---
 # Total nodes = sum of num_elem + 1. 
@@ -171,7 +169,7 @@ def createScene(root_node):
     main_dir_rotated = r_rot.apply([0, 0, 1]).tolist()
 
     instrument = mcr_instrument.Instrument(
-        name='prb_mcr',
+        name='prb_mcr_1mag',
         root_node=root_node,
         outer_diam=outer_diam,
         inner_diam=inner_diam,
