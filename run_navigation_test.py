@@ -36,10 +36,11 @@ INSERTION_SPEED = 0.0002     # m/step: slower for tighter turns
 WAYPOINT_REACH_DIST = 0.005  # 5mm reach dist
 MAX_DEVIATION = 0.015        # 15mm: fail if tip deviates too far
 MAX_STEPS = 150000           
-EPM_OFFSET_Z = -0.100        # -100mm: Weak magnetic field test
-LOOK_AHEAD_DIST = 0.020      # 20mm: slightly further ahead to "pull" through curves
-UPDATE_PERIOD = 1            # Update EPM every step for smoothness
+EPM_OFFSET_Z = -0.150        # -150mm: Extreme weak magnetic field test
+LOOK_AHEAD_DIST = 0.020      # 20mm: target ahead distance
 WARMUP_STEPS = 100           # Wait for physics to settle before checking failure
+UPDATE_PERIOD = 1            # Update EPM every step for smoothness
+EPM_NOISE_MM = 1.0           # 1mm random noise to simulate control/vibration
 # Hardware parameters (same as workspace MC)
 outer_diam = 0.002
 inner_diam = 0.0
@@ -133,6 +134,9 @@ class NavigationController(Sofa.Core.Controller):
         # New Metric: Per-waypoint minimum distance (Path-based RMSE)
         self.wp_min_distances = np.full(len(self.waypoints), 1e9)
         self.look_ahead_idx = 0
+        
+        # Seed randomness with trial_id for reproducible variance
+        np.random.seed(int(self.trial_id))
         
         # CSV output
         mode_str = f"{mode}mag"
@@ -243,40 +247,36 @@ class NavigationController(Sofa.Core.Controller):
         target_idx = min(len(self.waypoints) - 1, curr_idx + ahead_steps)
         self.look_ahead_idx = target_idx
         
-        target_pos = self.waypoints[target_idx]
+        # Calculate EPM position with noise
+        self._set_epm_for_waypoint(target_idx)
+
+    def _set_epm_for_waypoint(self, wp_idx):
+        target_wp = self.waypoints[wp_idx]
         
-        # EPM Position: Offset in -Z (Above the patient if +Z is Down)
-        epm_pos = target_pos + np.array([0, 0, EPM_OFFSET_Z])
+        # Add random noise to simulate real-world control errors
+        noise = np.random.normal(0, EPM_NOISE_MM / 1000.0, size=3)
+        noisy_target = target_wp + noise
+        
+        # Position EPM relative to noisy target (Ignore Z noise for offset consistency)
+        epm_pos = noisy_target + np.array([0, 0, EPM_OFFSET_Z])
         
         # EPM Direction: Purely towards the target point
-        epm_dir = target_pos - epm_pos
+        epm_dir = target_wp - epm_pos
         epm_dir = epm_dir / (np.linalg.norm(epm_dir) + 1e-12)
         
-        # If it's a tight turn (look ahead point and current point diverge in Y),
-        # add more traction by pulling further ahead
-        tangent = self.waypoints[min(len(self.waypoints)-1, target_idx+1)] - self.waypoints[target_idx]
-        tangent = tangent / (np.linalg.norm(tangent) + 1e-12)
-        epm_dir = 0.8 * epm_dir + 0.2 * tangent
-        epm_dir = epm_dir / np.linalg.norm(epm_dir)
-
         # Update EPM Orientation
-        # Z-axis is the default dipole dir in the Magnet model? 
-        # Actually usually it's the 3rd column of the frame.
-        # We want the dipole to point towards the target (downwards)
-        z_axis = np.array([0, 0, 1]) # Local magnet dipole axis
+        z_axis = np.array([0, 0, 1]) 
         v_rot = np.cross(z_axis, epm_dir)
-        w_rot = np.sqrt(1.0 + np.dot(z_axis, epm_dir))
         if np.linalg.norm(v_rot) < 1e-9:
              q_rot = [0, 0, 0, 1] if epm_dir[2] > 0 else [0, 1, 0, 0]
         else:
              v_rot /= np.linalg.norm(v_rot)
-             # Use half-angle for quaternion
-             half_angle = np.arccos(np.dot(z_axis, epm_dir)) / 2.0
+             half_angle = np.arccos(np.clip(np.dot(z_axis, epm_dir), -1.0, 1.0)) / 2.0
              q_rot = [v_rot[0]*np.sin(half_angle), v_rot[1]*np.sin(half_angle), v_rot[2]*np.sin(half_angle), np.cos(half_angle)]
         
         self.epm.mech_obj.position.value = [epm_pos.tolist() + q_rot]
         
-        # Control Mag Controller directly (bypassing epm internal cache if needed)
+        # Control Mag Controller directly
         self.epm.pos = epm_pos
         self.epm.m_epm_dir = epm_dir
         self.epm.m_epm = epm_dir * self.epm.m_epm_magnitude
@@ -307,9 +307,11 @@ class NavigationController(Sofa.Core.Controller):
         start_w = max(0, curr_idx - search_range)
         end_w = min(len(self.waypoints), curr_idx + search_range)
         for i in range(start_w, end_w):
-            d = np.linalg.norm(tip_pos - self.waypoints[i])
-            if d < self.wp_min_distances[i]:
-                self.wp_min_distances[i] = d
+            # NEW: Calculate deviation ONLY in XY-plane to ignore wall-riding height
+            diff = tip_pos - self.waypoints[i]
+            d_xy = np.linalg.norm(diff[:2])
+            if d_xy < self.wp_min_distances[i]:
+                self.wp_min_distances[i] = d_xy
         
         # Logging/Checking
         if self.step_cnt % 500 == 0:
@@ -383,9 +385,9 @@ def createScene(root_node):
     # Simulator: no gravity for synthetic vessel (pure navigation test),
     # gravity enabled for real vessel (clinical realism)
     if MODE == 3:
-        simulator = mcr_simulator.Simulator(root_node=root_node, gravity=[0, 0, 9.81], friction_coef=0.2)
+        simulator = mcr_simulator.Simulator(root_node=root_node, gravity=[0, 0, 9.81], friction_coef=0.5)
     else:
-        simulator = mcr_simulator.Simulator(root_node=root_node, gravity=[0, 0, 9.81], friction_coef=0.2)
+        simulator = mcr_simulator.Simulator(root_node=root_node, gravity=[0, 0, 9.81], friction_coef=0.5)
     
     # External Permanent Magnet - start above the first waypoint (-Z)
     init_epm_pos = waypoints[0] + np.array([0, 0, EPM_OFFSET_Z])

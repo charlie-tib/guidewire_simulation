@@ -18,11 +18,11 @@ WALL_THICKNESS = 0.0005    # 0.5mm wall
 OUTER_RADIUS = INNER_RADIUS + WALL_THICKNESS
 
 # S-bend geometry: two arcs with opposing curvature
-ARC_RADIUS = 0.020         # 20mm bend radius
+ARC_RADIUS = 0.012         # 12mm bend radius (Much tighter than 20mm)
 ARC_ANGLE_DEG = 180        # 180-degree U-turn
-STRAIGHT_ENTRY = 0.030     # 30mm straight entry section
-STRAIGHT_INTERMEDIATE = 0.040  # 40mm straight section between arcs
-STRAIGHT_EXIT = 0.030      # 30mm straight exit section
+STRAIGHT_ENTRY = 0.020     # 20mm straight entry section
+STRAIGHT_INTERMEDIATE = 0.020  # 20mm straight section between arcs
+STRAIGHT_EXIT = 0.020      # 20mm straight exit section
 
 # Mesh resolution
 N_CIRC = 16                # Points around circumference
