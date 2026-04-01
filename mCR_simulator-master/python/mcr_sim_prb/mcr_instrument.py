@@ -107,7 +107,7 @@ class Instrument(Sofa.Core.Controller):
         self.RG = self.InstrumentCombined.addObject(
             'RegularGridTopology',
             name='meshLinesCombined',
-            zmax=1, zmin=1,
+            zmax=0, zmin=0,
             nx=self.num_elem_body+self.num_elem_tip + 1, ny=1, nz=1,
             xmax=length_body+length_tip, xmin=0, ymin=0, ymax=0)
         self.MO = self.InstrumentCombined.addObject(
@@ -118,13 +118,18 @@ class Instrument(Sofa.Core.Controller):
             showObject=False)
 
         self.MO.init()
+        from scipy.spatial.transform import Rotation as R
+        t_pos = np.array(T_start_sim[:3])
+        t_rot = R.from_quat(T_start_sim[3:])
+        
         restPos = []
-        indicesAll = []
-        i = 0
         for pos in self.MO.rest_position.value:
-            restPos.append(T_start_sim)
-            indicesAll.append(i)
-            i = i+1
+            p_pos = np.array(pos[:3])
+            p_rot = R.from_quat(pos[3:])
+            # Result = Start * Local
+            new_pos = t_rot.apply(p_pos) + t_pos
+            new_rot = t_rot * p_rot
+            restPos.append(list(new_pos) + list(new_rot.as_quat()))
 
         forcesList = ""
         for i in range(0, self.num_elem_body+self.num_elem_tip):
@@ -187,10 +192,10 @@ class Instrument(Sofa.Core.Controller):
             angularStiffness=1e8,
             stiffness=1e8)
 
-        # restrict DOF of nodes
+        # restrict DOF of only the base node
         self.InstrumentCombined.addObject(
             'PartialFixedConstraint',
-            indices=indicesAll,
+            indices=0,
             fixedDirections=self.fixed_directions,
             fixAll=True)
 
