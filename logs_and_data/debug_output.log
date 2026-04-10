@@ -1,0 +1,52 @@
+
+>>> Running Monte Carlo for [my_design]: 1000 samples...
+    - Sample 50/1000 done.
+    - Sample 100/1000 done.
+    - Sample 150/1000 done.
+    - Sample 200/1000 done.
+    - Sample 250/1000 done.
+    - Sample 300/1000 done.
+    - Sample 350/1000 done.
+    - Sample 400/1000 done.
+    - Sample 450/1000 done.
+    - Sample 500/1000 done.
+    - Sample 550/1000 done.
+    - Sample 600/1000 done.
+    - Sample 650/1000 done.
+    - Sample 700/1000 done.
+    - Sample 750/1000 done.
+    - Sample 800/1000 done.
+    - Sample 850/1000 done.
+    - Sample 900/1000 done.
+    - Sample 950/1000 done.
+    - Sample 1000/1000 done.
+
+>>> Running Monte Carlo for [standard]: 1000 samples...
+    - Sample 50/1000 done.
+    - Sample 100/1000 done.
+    - Sample 150/1000 done.
+    - Sample 200/1000 done.
+    - Sample 250/1000 done.
+    - Sample 300/1000 done.
+    - Sample 350/1000 done.
+    - Sample 400/1000 done.
+    - Sample 450/1000 done.
+    - Sample 500/1000 done.
+    - Sample 550/1000 done.
+    - Sample 600/1000 done.
+    - Sample 650/1000 done.
+    - Sample 700/1000 done.
+    - Sample 750/1000 done.
+    - Sample 800/1000 done.
+    - Sample 850/1000 done.
+    - Sample 900/1000 done.
+    - Sample 950/1000 done.
+    - Sample 1000/1000 done.
+
+============================================================
+Mode                 | Convex Vol (cm³) | Voxel Vol (cm³) | Dexterity DCI (%)
+---------------------------------------------------------------------------
+my_design            | 2459.00          | 3.38            | 70.26          
+standard             | 1487.17          | 2.08            | 53.26          
+========================================
+可视化结果已保存至: workspace_comparison_result.png

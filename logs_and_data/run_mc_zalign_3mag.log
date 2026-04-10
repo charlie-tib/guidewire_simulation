@@ -1,0 +1,14 @@
+nohup: 忽略输入
+---------------------------------------
+Checking SOFA_ROOT and SOFAPYTHON3_ROOT
+Using environment variable SOFA_ROOT: /home/wen-zheng/miniconda3/envs/sofanew
+---------------------------------------
+[ERROR]   [PythonScript] TypeError: Magnet.__init__() got an unexpected keyword argument 'direction'
+  File "/home/wen-zheng/guidewire_simulation/run_workspace_MC.py", line 60, in <module>
+    m = mcr_magnet.Magnet(
+        ^^^^^^^^^^^^^^^^^^
+
+[INFO]    [SofaPython3.Simulation] Sofa.Simulation unload()
+[INFO]    [SofaPython3] Clearing Sofa.Core cache...
+[INFO]    [SofaPython3.Core] Sofa.Core unload()
+[INFO]    [SofaPython3.Helper] Sofa.Helper unload()

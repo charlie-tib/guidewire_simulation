@@ -9,7 +9,7 @@ class ExternalMagnet(Sofa.Core.Controller):
     using the dipole approximation at any given target point.
     '''
     def __init__(self, root_node, init_pos=[0., 0.10, 0.], init_rot=[0., 0., 0.], 
-                 br_n52=1.45, radius=0.010, height=0.040, *args, **kwargs):
+                 br_n52=1.45, radius=0.025, height=0.030, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
         
         self.root_node = root_node

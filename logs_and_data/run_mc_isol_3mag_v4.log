@@ -1,0 +1,367 @@
+nohup: 忽略输入
+---------------------------------------
+Checking SOFA_ROOT and SOFAPYTHON3_ROOT
+Using environment variable SOFA_ROOT: /home/wen-zheng/miniconda3/envs/sofanew
+---------------------------------------
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.AnimationLoop.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Detection.Algorithm.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Detection.Intersection.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Geometry.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Response.Contact.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Constraint.Lagrangian.Correction.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Constraint.Lagrangian.Solver.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Constraint.Projective.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.IO.Mesh.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.LinearSolver.Direct.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Mapping.Linear.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Mass.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.MechanicalLoad.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.ODESolver.Backward.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.SolidMechanics.Spring.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.StateContainer.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Setting.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Container.Constant.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Container.Dynamic.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Container.Grid.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Mapping.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Visual.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.GL.Component.Rendering3D.so
+[INFO]    [SofaPython3] Initializing with python version 3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]
+<string>:2: DeprecationWarning: scipy.misc is deprecated and will be removed in 2.0.0
+[INFO]    [SofaPython3] Added '/home/wen-zheng/miniconda3/envs/sofanew/lib/python2.7/site-packages' to sys.path
+[INFO]    [SofaPython3] Added '/home/wen-zheng/miniconda3/envs/sofanew/lib/python3.12/site-packages' to sys.path
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofaPython3.so
+[WARNING] [RequiredPlugin(ImportSofaPython3)] No component has been registered from SofaPython3.
+It could be because: 
+ - the entrypoint registerObjects() has not been implemented;
+ - (deprecated since v24.12) no sofa::core::RegisterObject() has been called;
+ - your plugin does not add any component (i.e BaseObject) into the factory. In that case, RequiredPlugin is not useful for this kind of plugin.
+[WARNING] [RegisterObject] BeamInterpolation: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] WireBeamInterpolation: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamSlidingConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamLengthConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] BeamAdapterActionController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] InterventionalRadiologyController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SutureController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] WireRestShape: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SteerableCatheter: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamForceFieldAndMass: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveInflatableBeamForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] BeamLengthMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] BeamProjectionDifferenceMultiMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] MultiAdaptiveBeamMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] RodMeshSection: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] RodSpireSection: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] RodStraightSection: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libBeamAdapter.so
+[WARNING] [RegisterObject] CableConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PartialRigidificationConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PositionConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SurfacePressureConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] UnilateralPlaneConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] JointConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AnimationEditor: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] DataVariationLimiter: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SerialPortBridgeGeneric: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] CenterOfMass: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] VolumeFromTriangles: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] VolumeFromTetrahedrons: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PREquivalentStiffnessForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PartialRigidificationForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PipeForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSTLIB.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSoftRobots.so
+[DEPRECATED] [BruteForceDetection(N2)] As a replacement, use a BroadPhase component, such as [BruteForceBroadPhase, IncrSAP],  
+  AND a NarrowPhase component, such as [BVHNarrowPhase, DirectSAPNarrowPhase, IncrSAP, RayTraceNarrowPhase].  
+  BruteForceBroadPhase and BVHNarrowPhase have been automatically added to your scene for backward compatibility.
+[INFO]    [InterventionalRadiologyController(m_ircontroller)] 1 instrument(s) found (WireBeamInterpolation)
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No point defined in the AdaptiveBeamMapping - uses positions defined by Mechanical State
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No beams found in adaptBeamInterpolation in BeamInterpolation namedInterpolGuide
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No beams found in adaptBeamInterpolation in BeamInterpolation namedInterpolGuide
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No beams found in adaptBeamInterpolation in BeamInterpolation namedInterpolGuide
+Starting Workspace MC Simulation (Mode=3, Samples=2000)...
+ControllerSofa Heartbeat: Simulation is running (Step 100)
+ControllerSofa Heartbeat: Simulation is running (Step 200)
+ControllerSofa Heartbeat: Simulation is running (Step 300)
+ControllerSofa Heartbeat: Simulation is running (Step 400)
+ControllerSofa Heartbeat: Simulation is running (Step 500)
+ControllerSofa Heartbeat: Simulation is running (Step 600)
+ControllerSofa Heartbeat: Simulation is running (Step 700)
+ControllerSofa Heartbeat: Simulation is running (Step 800)
+[3-Mag] 1/2000: Tip Z=411.9mm | Mid Z=411.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 900)
+ControllerSofa Heartbeat: Simulation is running (Step 1000)
+ControllerSofa Heartbeat: Simulation is running (Step 1100)
+ControllerSofa Heartbeat: Simulation is running (Step 1200)
+[3-Mag] 2/2000: Tip Z=427.5mm | Mid Z=427.5mm
+ControllerSofa Heartbeat: Simulation is running (Step 1300)
+ControllerSofa Heartbeat: Simulation is running (Step 1400)
+ControllerSofa Heartbeat: Simulation is running (Step 1500)
+ControllerSofa Heartbeat: Simulation is running (Step 1600)
+[3-Mag] 3/2000: Tip Z=429.6mm | Mid Z=429.6mm
+ControllerSofa Heartbeat: Simulation is running (Step 1700)
+ControllerSofa Heartbeat: Simulation is running (Step 1800)
+ControllerSofa Heartbeat: Simulation is running (Step 1900)
+ControllerSofa Heartbeat: Simulation is running (Step 2000)
+[3-Mag] 4/2000: Tip Z=429.8mm | Mid Z=429.8mm
+ControllerSofa Heartbeat: Simulation is running (Step 2100)
+ControllerSofa Heartbeat: Simulation is running (Step 2200)
+ControllerSofa Heartbeat: Simulation is running (Step 2300)
+ControllerSofa Heartbeat: Simulation is running (Step 2400)
+[3-Mag] 5/2000: Tip Z=430.0mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 2500)
+ControllerSofa Heartbeat: Simulation is running (Step 2600)
+ControllerSofa Heartbeat: Simulation is running (Step 2700)
+ControllerSofa Heartbeat: Simulation is running (Step 2800)
+[3-Mag] 6/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 2900)
+ControllerSofa Heartbeat: Simulation is running (Step 3000)
+ControllerSofa Heartbeat: Simulation is running (Step 3100)
+ControllerSofa Heartbeat: Simulation is running (Step 3200)
+[3-Mag] 7/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 3300)
+ControllerSofa Heartbeat: Simulation is running (Step 3400)
+ControllerSofa Heartbeat: Simulation is running (Step 3500)
+ControllerSofa Heartbeat: Simulation is running (Step 3600)
+[3-Mag] 8/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 3700)
+ControllerSofa Heartbeat: Simulation is running (Step 3800)
+ControllerSofa Heartbeat: Simulation is running (Step 3900)
+ControllerSofa Heartbeat: Simulation is running (Step 4000)
+[3-Mag] 9/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 4100)
+ControllerSofa Heartbeat: Simulation is running (Step 4200)
+ControllerSofa Heartbeat: Simulation is running (Step 4300)
+ControllerSofa Heartbeat: Simulation is running (Step 4400)
+[3-Mag] 10/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 4500)
+ControllerSofa Heartbeat: Simulation is running (Step 4600)
+ControllerSofa Heartbeat: Simulation is running (Step 4700)
+ControllerSofa Heartbeat: Simulation is running (Step 4800)
+[3-Mag] 11/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 4900)
+ControllerSofa Heartbeat: Simulation is running (Step 5000)
+ControllerSofa Heartbeat: Simulation is running (Step 5100)
+ControllerSofa Heartbeat: Simulation is running (Step 5200)
+[3-Mag] 12/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 5300)
+ControllerSofa Heartbeat: Simulation is running (Step 5400)
+ControllerSofa Heartbeat: Simulation is running (Step 5500)
+ControllerSofa Heartbeat: Simulation is running (Step 5600)
+[3-Mag] 13/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 5700)
+ControllerSofa Heartbeat: Simulation is running (Step 5800)
+ControllerSofa Heartbeat: Simulation is running (Step 5900)
+ControllerSofa Heartbeat: Simulation is running (Step 6000)
+[3-Mag] 14/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 6100)
+ControllerSofa Heartbeat: Simulation is running (Step 6200)
+ControllerSofa Heartbeat: Simulation is running (Step 6300)
+ControllerSofa Heartbeat: Simulation is running (Step 6400)
+[3-Mag] 15/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 6500)
+ControllerSofa Heartbeat: Simulation is running (Step 6600)
+ControllerSofa Heartbeat: Simulation is running (Step 6700)
+ControllerSofa Heartbeat: Simulation is running (Step 6800)
+[3-Mag] 16/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 6900)
+ControllerSofa Heartbeat: Simulation is running (Step 7000)
+ControllerSofa Heartbeat: Simulation is running (Step 7100)
+ControllerSofa Heartbeat: Simulation is running (Step 7200)
+[3-Mag] 17/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 7300)
+ControllerSofa Heartbeat: Simulation is running (Step 7400)
+ControllerSofa Heartbeat: Simulation is running (Step 7500)
+ControllerSofa Heartbeat: Simulation is running (Step 7600)
+[3-Mag] 18/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 7700)
+ControllerSofa Heartbeat: Simulation is running (Step 7800)
+ControllerSofa Heartbeat: Simulation is running (Step 7900)
+ControllerSofa Heartbeat: Simulation is running (Step 8000)
+[3-Mag] 19/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 8100)
+ControllerSofa Heartbeat: Simulation is running (Step 8200)
+ControllerSofa Heartbeat: Simulation is running (Step 8300)
+ControllerSofa Heartbeat: Simulation is running (Step 8400)
+[3-Mag] 20/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 8500)
+ControllerSofa Heartbeat: Simulation is running (Step 8600)
+ControllerSofa Heartbeat: Simulation is running (Step 8700)
+ControllerSofa Heartbeat: Simulation is running (Step 8800)
+[3-Mag] 21/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 8900)
+ControllerSofa Heartbeat: Simulation is running (Step 9000)
+ControllerSofa Heartbeat: Simulation is running (Step 9100)
+ControllerSofa Heartbeat: Simulation is running (Step 9200)
+[3-Mag] 22/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 9300)
+ControllerSofa Heartbeat: Simulation is running (Step 9400)
+ControllerSofa Heartbeat: Simulation is running (Step 9500)
+ControllerSofa Heartbeat: Simulation is running (Step 9600)
+[3-Mag] 23/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 9700)
+ControllerSofa Heartbeat: Simulation is running (Step 9800)
+ControllerSofa Heartbeat: Simulation is running (Step 9900)
+ControllerSofa Heartbeat: Simulation is running (Step 10000)
+[3-Mag] 24/2000: Tip Z=429.9mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 10100)
+ControllerSofa Heartbeat: Simulation is running (Step 10200)
+ControllerSofa Heartbeat: Simulation is running (Step 10300)
+ControllerSofa Heartbeat: Simulation is running (Step 10400)
+[3-Mag] 25/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 10500)
+ControllerSofa Heartbeat: Simulation is running (Step 10600)
+ControllerSofa Heartbeat: Simulation is running (Step 10700)
+ControllerSofa Heartbeat: Simulation is running (Step 10800)
+[3-Mag] 26/2000: Tip Z=429.9mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 10900)
+ControllerSofa Heartbeat: Simulation is running (Step 11000)
+ControllerSofa Heartbeat: Simulation is running (Step 11100)
+ControllerSofa Heartbeat: Simulation is running (Step 11200)
+[3-Mag] 27/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 11300)
+ControllerSofa Heartbeat: Simulation is running (Step 11400)
+ControllerSofa Heartbeat: Simulation is running (Step 11500)
+ControllerSofa Heartbeat: Simulation is running (Step 11600)
+[3-Mag] 28/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 11700)
+ControllerSofa Heartbeat: Simulation is running (Step 11800)
+ControllerSofa Heartbeat: Simulation is running (Step 11900)
+ControllerSofa Heartbeat: Simulation is running (Step 12000)
+[3-Mag] 29/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 12100)
+ControllerSofa Heartbeat: Simulation is running (Step 12200)
+ControllerSofa Heartbeat: Simulation is running (Step 12300)
+ControllerSofa Heartbeat: Simulation is running (Step 12400)
+[3-Mag] 30/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 12500)
+ControllerSofa Heartbeat: Simulation is running (Step 12600)
+ControllerSofa Heartbeat: Simulation is running (Step 12700)
+ControllerSofa Heartbeat: Simulation is running (Step 12800)
+[3-Mag] 31/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 12900)
+ControllerSofa Heartbeat: Simulation is running (Step 13000)
+ControllerSofa Heartbeat: Simulation is running (Step 13100)
+ControllerSofa Heartbeat: Simulation is running (Step 13200)
+[3-Mag] 32/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 13300)
+ControllerSofa Heartbeat: Simulation is running (Step 13400)
+ControllerSofa Heartbeat: Simulation is running (Step 13500)
+ControllerSofa Heartbeat: Simulation is running (Step 13600)
+[3-Mag] 33/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 13700)
+ControllerSofa Heartbeat: Simulation is running (Step 13800)
+ControllerSofa Heartbeat: Simulation is running (Step 13900)
+ControllerSofa Heartbeat: Simulation is running (Step 14000)
+[3-Mag] 34/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 14100)
+ControllerSofa Heartbeat: Simulation is running (Step 14200)
+ControllerSofa Heartbeat: Simulation is running (Step 14300)
+ControllerSofa Heartbeat: Simulation is running (Step 14400)
+[3-Mag] 35/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 14500)
+ControllerSofa Heartbeat: Simulation is running (Step 14600)
+ControllerSofa Heartbeat: Simulation is running (Step 14700)
+ControllerSofa Heartbeat: Simulation is running (Step 14800)
+[3-Mag] 36/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 14900)
+ControllerSofa Heartbeat: Simulation is running (Step 15000)
+ControllerSofa Heartbeat: Simulation is running (Step 15100)
+ControllerSofa Heartbeat: Simulation is running (Step 15200)
+[3-Mag] 37/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 15300)
+ControllerSofa Heartbeat: Simulation is running (Step 15400)
+ControllerSofa Heartbeat: Simulation is running (Step 15500)
+ControllerSofa Heartbeat: Simulation is running (Step 15600)
+[3-Mag] 38/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 15700)
+ControllerSofa Heartbeat: Simulation is running (Step 15800)
+ControllerSofa Heartbeat: Simulation is running (Step 15900)
+ControllerSofa Heartbeat: Simulation is running (Step 16000)
+[3-Mag] 39/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 16100)
+ControllerSofa Heartbeat: Simulation is running (Step 16200)
+ControllerSofa Heartbeat: Simulation is running (Step 16300)
+ControllerSofa Heartbeat: Simulation is running (Step 16400)
+[3-Mag] 40/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 16500)
+ControllerSofa Heartbeat: Simulation is running (Step 16600)
+ControllerSofa Heartbeat: Simulation is running (Step 16700)
+ControllerSofa Heartbeat: Simulation is running (Step 16800)
+[3-Mag] 41/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 16900)
+ControllerSofa Heartbeat: Simulation is running (Step 17000)
+ControllerSofa Heartbeat: Simulation is running (Step 17100)
+ControllerSofa Heartbeat: Simulation is running (Step 17200)
+[3-Mag] 42/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 17300)
+ControllerSofa Heartbeat: Simulation is running (Step 17400)
+ControllerSofa Heartbeat: Simulation is running (Step 17500)
+ControllerSofa Heartbeat: Simulation is running (Step 17600)
+[3-Mag] 43/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 17700)
+ControllerSofa Heartbeat: Simulation is running (Step 17800)
+ControllerSofa Heartbeat: Simulation is running (Step 17900)
+ControllerSofa Heartbeat: Simulation is running (Step 18000)
+[3-Mag] 44/2000: Tip Z=429.9mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 18100)
+ControllerSofa Heartbeat: Simulation is running (Step 18200)
+ControllerSofa Heartbeat: Simulation is running (Step 18300)
+ControllerSofa Heartbeat: Simulation is running (Step 18400)
+[3-Mag] 45/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 18500)
+ControllerSofa Heartbeat: Simulation is running (Step 18600)
+ControllerSofa Heartbeat: Simulation is running (Step 18700)
+ControllerSofa Heartbeat: Simulation is running (Step 18800)
+[3-Mag] 46/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 18900)
+ControllerSofa Heartbeat: Simulation is running (Step 19000)
+ControllerSofa Heartbeat: Simulation is running (Step 19100)
+ControllerSofa Heartbeat: Simulation is running (Step 19200)
+[3-Mag] 47/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 19300)
+ControllerSofa Heartbeat: Simulation is running (Step 19400)
+ControllerSofa Heartbeat: Simulation is running (Step 19500)
+ControllerSofa Heartbeat: Simulation is running (Step 19600)
+[3-Mag] 48/2000: Tip Z=429.9mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 19700)
+ControllerSofa Heartbeat: Simulation is running (Step 19800)
+ControllerSofa Heartbeat: Simulation is running (Step 19900)
+ControllerSofa Heartbeat: Simulation is running (Step 20000)
+[3-Mag] 49/2000: Tip Z=429.9mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 20100)
+ControllerSofa Heartbeat: Simulation is running (Step 20200)
+ControllerSofa Heartbeat: Simulation is running (Step 20300)
+ControllerSofa Heartbeat: Simulation is running (Step 20400)
+[3-Mag] 50/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 20500)
+ControllerSofa Heartbeat: Simulation is running (Step 20600)
+ControllerSofa Heartbeat: Simulation is running (Step 20700)
+ControllerSofa Heartbeat: Simulation is running (Step 20800)
+[3-Mag] 51/2000: Tip Z=429.9mm | Mid Z=429.9mm
+ControllerSofa Heartbeat: Simulation is running (Step 20900)
+ControllerSofa Heartbeat: Simulation is running (Step 21000)
+ControllerSofa Heartbeat: Simulation is running (Step 21100)
+ControllerSofa Heartbeat: Simulation is running (Step 21200)
+[3-Mag] 52/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 21300)
+ControllerSofa Heartbeat: Simulation is running (Step 21400)
+ControllerSofa Heartbeat: Simulation is running (Step 21500)
+ControllerSofa Heartbeat: Simulation is running (Step 21600)
+[3-Mag] 53/2000: Tip Z=430.1mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 21700)
+ControllerSofa Heartbeat: Simulation is running (Step 21800)
+ControllerSofa Heartbeat: Simulation is running (Step 21900)
+ControllerSofa Heartbeat: Simulation is running (Step 22000)
+[3-Mag] 54/2000: Tip Z=430.0mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 22100)
+ControllerSofa Heartbeat: Simulation is running (Step 22200)
+ControllerSofa Heartbeat: Simulation is running (Step 22300)
+ControllerSofa Heartbeat: Simulation is running (Step 22400)
+[3-Mag] 55/2000: Tip Z=429.9mm | Mid Z=430.0mm
+ControllerSofa Heartbeat: Simulation is running (Step 22500)
+ControllerSofa Heartbeat: Simulation is running (Step 22600)
+ControllerSofa Heartbeat: Simulation is running (Step 22700)
+ControllerSofa Heartbeat: Simulation is running (Step 22800)

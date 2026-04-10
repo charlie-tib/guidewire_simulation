@@ -81,7 +81,7 @@ class MagController(Sofa.Core.Controller):
             # torque on magnet
             r_rot = R.from_quat([quat[0], quat[1], quat[2], quat[3]])
             
-            # The magnetic moment direction in local frame, considering polarity
+            # The magnetic moment direction in local frame (Axial X for standard SOFA)
             local_m_dir = [magnet.polarity, 0., 0.]
             X = r_rot.apply(local_m_dir)
             

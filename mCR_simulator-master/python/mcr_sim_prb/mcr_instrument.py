@@ -1,5 +1,3 @@
-# 基于梁理论 (Beam Theory) 的磁控导丝机械结构与拓扑定义。
-# [STABLE VERSION] 使用单一段拓扑解决多段渲染导致的 CurvAbs 排列错误与段错误。
 import Sofa
 import numpy as np
 
@@ -29,6 +27,7 @@ class Instrument(Sofa.Core.Controller):
             color=[0.2, .8, 1., 1.],
             segments=None,
             main_direction=[0, 0, 1],
+            use_navigation=True,
             *args, **kwargs):
 
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
@@ -41,7 +40,7 @@ class Instrument(Sofa.Core.Controller):
         self.index_mag = np.nonzero(self.magnets)[0]
         self.outer_diam = outer_diam
         self.inner_diam = inner_diam
-        
+
         # 如果提供了 segments，计算总长度和总单元数
         if segments is not None:
             total_len = sum(seg['length'] for seg in segments)
@@ -63,21 +62,49 @@ class Instrument(Sofa.Core.Controller):
         self.fixed_directions = fixed_directions
 
         topoLines_guide = self.root_node.addChild(name+'_topo_lines')
+
+        # [STABLE DVS] Merge adjacent segments with identical Young's Modulus to reduce section boundaries
+        merged_segments = []
+        if segments is not None:
+            for seg in segments:
+                if not merged_segments or merged_segments[-1]['E'] != seg['E']:
+                    merged_segments.append(seg.copy())
+                else:
+                    merged_segments[-1]['length'] += seg['length']
+                    merged_segments[-1]['num_elem'] += seg['num_elem']
         
-        # [CRITICAL] 采用单一 RodStraightSection 以确保拓扑连续且 curvAbs 单调递增
-        topoLines_guide.addObject('RodStraightSection', name='FullSection', 
-                                   youngModulus=young_modulus_tip, poissonRatio=0.33, 
-                                   radius=self.outer_diam_qu/2.0, length=total_len,
-                                   nbEdgesCollis=total_elements, 
-                                   nbEdgesVisu=total_elements)
+        section_paths = []
+        if segments is not None:
+            for i, seg in enumerate(merged_segments):
+                sec_name = f'Section_{i}'
+                topoLines_guide.addObject('RodStraightSection', 
+                                           name=sec_name,
+                                           youngModulus=seg['E'],
+                                           poissonRatio=0.33,
+                                           radius=self.outer_diam_qu/2.0,
+                                           length=seg['length'],
+                                           nbEdgesCollis=seg['num_elem'],
+                                           nbEdgesVisu=seg['num_elem'])
+                section_paths.append(f'@{sec_name}')
+        else:
+            # Fallback to simple body/tip if no segments provided
+            topoLines_guide.addObject('RodStraightSection', name='BodySection',
+                                       youngModulus=young_modulus_body, poissonRatio=0.33,
+                                       radius=self.outer_diam_qu/2.0, length=length_body,
+                                       nbEdgesCollis=num_elem_body, nbEdgesVisu=num_elem_body)
+            topoLines_guide.addObject('RodStraightSection', name='TipSection',
+                                       youngModulus=young_modulus_tip, poissonRatio=0.33,
+                                       radius=self.outer_diam_qu/2.0, length=length_tip,
+                                       nbEdgesCollis=num_elem_tip, nbEdgesVisu=num_elem_tip)
+            section_paths = ['@BodySection', '@TipSection']
 
         topoLines_guide.addObject(
             'WireRestShape',
             name='InstrRestShape',
             template='Rigid3d',
-            wireMaterials='@FullSection',
+            wireMaterials=" ".join(section_paths),
             printLog=True)
-            
+
         topoLines_guide.addObject(
             'EdgeSetTopologyContainer',
             name='meshLinesGuide')
@@ -97,9 +124,9 @@ class Instrument(Sofa.Core.Controller):
         self.InstrumentCombined = self.root_node.addChild(name)
         self.InstrumentCombined.addObject(
             'EulerImplicitSolver',
-            rayleighStiffness=0.2,
+            rayleighStiffness=0.5, # Increased damping to suppress jumping
             printLog=False,
-            rayleighMass=0.05)
+            rayleighMass=0.1)     # Mass damping also increased
         self.InstrumentCombined.addObject(
             'BTDLinearSolver',
             verification=False,
@@ -107,7 +134,7 @@ class Instrument(Sofa.Core.Controller):
         self.RG = self.InstrumentCombined.addObject(
             'RegularGridTopology',
             name='meshLinesCombined',
-            zmax=0, zmin=0,
+            zmax=1, zmin=1,
             nx=self.num_elem_body+self.num_elem_tip + 1, ny=1, nz=1,
             xmax=length_body+length_tip, xmin=0, ymin=0, ymax=0)
         self.MO = self.InstrumentCombined.addObject(
@@ -117,27 +144,22 @@ class Instrument(Sofa.Core.Controller):
             template='Rigid3d',
             showObject=False)
 
-        self.MO.init()
-        from scipy.spatial.transform import Rotation as R
-        t_pos = np.array(T_start_sim[:3])
-        t_rot = R.from_quat(T_start_sim[3:])
+        # [STABLE STATIC] Handle non-navigation mode
+        self.use_navigation = use_navigation
+        self.main_direction = main_direction
         
-        restPos = []
-        for pos in self.MO.rest_position.value:
-            p_pos = np.array(pos[:3])
-            p_rot = R.from_quat(pos[3:])
-            # Result = Start * Local
-            new_pos = t_rot.apply(p_pos) + t_pos
-            new_rot = t_rot * p_rot
-            restPos.append(list(new_pos) + list(new_rot.as_quat()))
+        self.MO.init()
+        indicesAll = list(range(self.num_elem_body + self.num_elem_tip + 1))
 
+        # [REVERTED] Manual rotation caused SEGFAULT. Using Frozen IRC instead.
+        self.use_navigation = use_navigation
+        self.main_direction = main_direction
+        
         forcesList = ""
         for i in range(0, self.num_elem_body+self.num_elem_tip):
             forcesList += " 0 0 0 0 0 0 "
 
         indicesList = list(range(0, self.num_elem_body+self.num_elem_tip))
-
-        self.MO.rest_position.value = restPos
 
         self.IC = self.InstrumentCombined.addObject(
             'WireBeamInterpolation',
@@ -166,36 +188,35 @@ class Instrument(Sofa.Core.Controller):
 
         self.IRC = self.InstrumentCombined.addObject(
             'InterventionalRadiologyController',
-            xtip=[0.001], name='m_ircontroller',
+            xtip=[0.001 if self.use_navigation else 0.110], name='m_ircontroller',
             instruments='InterpolGuide',
             step=0.0005,
             printLog=True,
-            listening=True,
+            # [STATIC FIX] Disable listening and speed if in static mode
+            listening=self.use_navigation,
             template='Rigid3d',
             startingPos=T_start_sim,
             rotationInstrument=[0.],
-            speed=1e-12,
+            speed=1e-12 if self.use_navigation else 0.0,
             mainDirection=self.main_direction,
             threshold=5e-9,
             controlledInstrument=0)
+        
         self.InstrumentCombined.addObject(
             'LinearSolverConstraintCorrection',
             wire_optimization='true',
             printLog=False)
+
         self.InstrumentCombined.addObject(
-            'FixedConstraint',
+            'FixedProjectiveConstraint',
             indices=0,
             name='FixedConstraint')
-        self.InstrumentCombined.addObject(
-            'RestShapeSpringsForceField',
-            points='@m_ircontroller.indexFirstNode',
-            angularStiffness=1e8,
-            stiffness=1e8)
+        # [REMOVED] RestShapeSpringsForceField often causes "Ghost Stretching" when fighting with IRC
 
-        # restrict DOF of only the base node
+        # restrict DOF of nodes
         self.InstrumentCombined.addObject(
-            'PartialFixedConstraint',
-            indices=0,
+            'PartialFixedProjectiveConstraint', # Optimized for v25.06 stability
+            indices=indicesAll,
             fixedDirections=self.fixed_directions,
             fixAll=True)
 
@@ -235,7 +256,7 @@ class Instrument(Sofa.Core.Controller):
             output='@QuadsCatheter',
             printLog='1',
             useCurvAbs='1')
-            
+
         VisuOgl = CathVisu.addChild('VisuOgl')
         VisuOgl.addObject(
             'OglModel',

@@ -1,0 +1,8 @@
+---------------------------------------
+Checking SOFA_ROOT and SOFAPYTHON3_ROOT
+Using environment variable SOFA_ROOT: /home/wen-zheng/miniconda3/envs/sofanew
+---------------------------------------
+[INFO]    [SofaPython3.Simulation] Sofa.Simulation unload()
+[INFO]    [SofaPython3] Clearing Sofa.Core cache...
+[INFO]    [SofaPython3.Core] Sofa.Core unload()
+[INFO]    [SofaPython3.Helper] Sofa.Helper unload()

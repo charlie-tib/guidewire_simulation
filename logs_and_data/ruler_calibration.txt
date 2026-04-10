@@ -1,0 +1,3 @@
+px_per_mm=3.2016
+ruler_px_dist=32.02
+ruler_mm=10.00

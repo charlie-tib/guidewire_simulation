@@ -1,0 +1,83 @@
+nohup: 忽略输入
+---------------------------------------
+Checking SOFA_ROOT and SOFAPYTHON3_ROOT
+Using environment variable SOFA_ROOT: /home/wen-zheng/miniconda3/envs/sofanew
+---------------------------------------
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.AnimationLoop.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Detection.Algorithm.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Detection.Intersection.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Geometry.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Collision.Response.Contact.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Constraint.Lagrangian.Correction.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Constraint.Lagrangian.Solver.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Constraint.Projective.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.IO.Mesh.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.LinearSolver.Direct.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Mapping.Linear.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Mass.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.MechanicalLoad.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.ODESolver.Backward.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.SolidMechanics.Spring.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.StateContainer.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Setting.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Container.Constant.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Container.Dynamic.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Container.Grid.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Topology.Mapping.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.Component.Visual.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofa.GL.Component.Rendering3D.so
+[INFO]    [SofaPython3] Initializing with python version 3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]
+<string>:2: DeprecationWarning: scipy.misc is deprecated and will be removed in 2.0.0
+[INFO]    [SofaPython3] Added '/home/wen-zheng/miniconda3/envs/sofanew/lib/python2.7/site-packages' to sys.path
+[INFO]    [SofaPython3] Added '/home/wen-zheng/miniconda3/envs/sofanew/lib/python3.12/site-packages' to sys.path
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSofaPython3.so
+[WARNING] [RequiredPlugin(ImportSofaPython3)] No component has been registered from SofaPython3.
+It could be because: 
+ - the entrypoint registerObjects() has not been implemented;
+ - (deprecated since v24.12) no sofa::core::RegisterObject() has been called;
+ - your plugin does not add any component (i.e BaseObject) into the factory. In that case, RequiredPlugin is not useful for this kind of plugin.
+[WARNING] [RegisterObject] BeamInterpolation: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] WireBeamInterpolation: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamSlidingConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamLengthConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] BeamAdapterActionController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] InterventionalRadiologyController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SutureController: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] WireRestShape: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SteerableCatheter: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamForceFieldAndMass: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveInflatableBeamForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AdaptiveBeamMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] BeamLengthMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] BeamProjectionDifferenceMultiMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] MultiAdaptiveBeamMapping: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] RodMeshSection: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] RodSpireSection: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] RodStraightSection: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libBeamAdapter.so
+[WARNING] [RegisterObject] CableConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PartialRigidificationConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PositionConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SurfacePressureConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] UnilateralPlaneConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] JointConstraint: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] AnimationEditor: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] DataVariationLimiter: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] SerialPortBridgeGeneric: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] CenterOfMass: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] VolumeFromTriangles: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] VolumeFromTetrahedrons: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PREquivalentStiffnessForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PartialRigidificationForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[WARNING] [RegisterObject] PipeForceField: Implicit object registration is deprecated since v24.12. Check #4429 for more information.
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSTLIB.so
+[INFO]    [PluginManager] Loaded plugin: /home/wen-zheng/miniconda3/envs/sofanew/lib/libSoftRobots.so
+[DEPRECATED] [BruteForceDetection(N2)] As a replacement, use a BroadPhase component, such as [BruteForceBroadPhase, IncrSAP],  
+  AND a NarrowPhase component, such as [BVHNarrowPhase, DirectSAPNarrowPhase, IncrSAP, RayTraceNarrowPhase].  
+  BruteForceBroadPhase and BVHNarrowPhase have been automatically added to your scene for backward compatibility.
+[INFO]    [InterventionalRadiologyController(m_ircontroller)] 1 instrument(s) found (WireBeamInterpolation)
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No point defined in the AdaptiveBeamMapping - uses positions defined by Mechanical State
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No beams found in adaptBeamInterpolation in BeamInterpolation namedInterpolGuide
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No beams found in adaptBeamInterpolation in BeamInterpolation namedInterpolGuide
+[INFO]    [AdaptiveBeamMapping(VisuMapCath)] No beams found in adaptBeamInterpolation in BeamInterpolation namedInterpolGuide
