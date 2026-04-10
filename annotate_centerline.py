@@ -14,8 +14,8 @@ import numpy as np
 # ============================================================
 # 配置
 # ============================================================
-IMAGE_PATH = '/home/wen-zheng/guidewire_simulation/calibration_photo_42.png'
-OUTPUT_PATH = '/home/wen-zheng/guidewire_simulation/centerline_real.csv'
+IMAGE_PATH = '/home/wen-zheng/guidewire_simulation/calibration_photo_6.png'
+OUTPUT_PATH = '/home/wen-zheng/guidewire_simulation/centerline_real_6.csv'
 RULER_OUTPUT = '/home/wen-zheng/guidewire_simulation/ruler_calibration.txt'
 
 # 全局变量

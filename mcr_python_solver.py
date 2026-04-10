@@ -37,7 +37,7 @@ class DVSMagneticRodSolver:
                 vol = np.pi * (radius_mag**2) * seg['length'] 
                 m_val = (1.2 * vol / (4e-7 * np.pi)) * seg.get('polarity', 1.0)
                 self.magnet_moments.append(m_val)
-                self.rho[current_node : seg_end] = 7500.0 # 磁铁高密度
+                self.rho[current_node : seg_end] = 10000.0 # 磁铁高密度
             else:
                 self.rho[current_node : seg_end] = seg.get('density', 1100.0)
             
@@ -122,10 +122,11 @@ class DVSMagneticRodSolver:
                 m_vec = self.magnet_moments[idx] * dir_i
                 e_magnetic += -np.dot(m_vec, B_uniform)
                 
-        # 3. 重力势能 (E_g = - sum m dot g_vec dot r_center)
-        # 假设导丝基座在 (0,0,0)
+        # 3. 重力势能 (E_g = - sum (F_g dot r))
+        # 修正：F_g = m * g_vec, g_vec 为 [0, 0, -9.81]。
+        # 势能 U = -F_g dot r = - (m * g_vec dot r) = m * 9.81 * z.
         seg_centers = (points[:-1] + points[1:]) / 2.0
-        e_gravity = np.sum(self.mass_per_seg * np.dot(seg_centers, self.g_vec))
+        e_gravity = -np.sum(self.mass_per_seg * np.dot(seg_centers, self.g_vec))
 
         return e_elastic + e_magnetic + e_gravity
 
@@ -136,7 +137,7 @@ class DVSMagneticRodSolver:
         disp: 是否打印求解过程
         """
         if x0 is None:
-            x0 = np.ones((self.N - 1) * 2) * 1e-4
+            x0 = np.zeros((self.N - 1) * 2)
         res = minimize(self.total_energy, x0, args=(epm_pos, epm_m, B_uniform), method='L-BFGS-B', options={'maxiter': maxiter, 'ftol': ftol, 'disp': disp})
         return res.x, res.fun
 
